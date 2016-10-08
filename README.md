@@ -1,2 +1,0 @@
-# Effex
-FX enchantments

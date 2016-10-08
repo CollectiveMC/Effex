@@ -1,0 +1,4 @@
+name: Effex
+main: org.cyberpwn.effex.Effex
+version: ${project.version}
+depend: [Phantom, EnchantmentAPI]
