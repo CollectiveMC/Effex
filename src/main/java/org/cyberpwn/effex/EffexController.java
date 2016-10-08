@@ -134,8 +134,8 @@ public class EffexController extends ConfigurableController
 	private GMap<String, GList<Enchant>> tierSet;
 	private GMap<String, Range> ranged;
 	private GMap<String, Double> cost;
-	//TODO ybcdfgfghsgh
-	//private GList<Player> ignored;
+	// TODO ybcdfgfghsgh
+	// private GList<Player> ignored;
 	
 	public EffexController(Controllable parentController)
 	{
@@ -149,8 +149,8 @@ public class EffexController extends ConfigurableController
 		tierSet = new GMap<String, GList<Enchant>>();
 		ranged = new GMap<String, Range>();
 		cost = new GMap<String, Double>();
-		//ignored = new GList<Player>();
-		//TODO asfdsadfasfd
+		// ignored = new GList<Player>();
+		// TODO asfdsadfasfd
 		
 		register(npcController);
 	}
@@ -1107,88 +1107,93 @@ public class EffexController extends ConfigurableController
 				e.getPlayer().getItemInHand().setDurability((short) (e.getPlayer().getItemInHand().getDurability() + 3));
 			}
 		}
-//TODO sdfsdfsdfsdf
-//		if(e.getPlayer().getItemInHand() != null && EnchantmentAPI.itemHasEnchantment(e.getPlayer().getItemInHand(), "Blast"))
-//		{
-//			if(ignored.contains(e.getPlayer()))
-//			{
-//				return;
-//			}
-//			
-//			int level = EnchantmentAPI.getEnchantments(e.getPlayer().getItemInHand()).get(EnchantmentAPI.getEnchantment("Blast"));
-//			GList<Block> breaks = new GList<Block>();
-//			breaks.add(e.getBlock().getRelative(BlockFace.UP));
-//			breaks.add(e.getBlock().getRelative(BlockFace.DOWN));
-//			
-//			if(level > 1)
-//			{
-//				breaks.add(e.getBlock().getRelative(BlockFace.UP).getRelative(BlockFace.NORTH));
-//				breaks.add(e.getBlock().getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH));
-//				breaks.add(e.getBlock().getRelative(BlockFace.UP).getRelative(BlockFace.EAST));
-//				breaks.add(e.getBlock().getRelative(BlockFace.UP).getRelative(BlockFace.WEST));
-//				breaks.add(e.getBlock().getRelative(BlockFace.DOWN).getRelative(BlockFace.NORTH));
-//				breaks.add(e.getBlock().getRelative(BlockFace.DOWN).getRelative(BlockFace.SOUTH));
-//				breaks.add(e.getBlock().getRelative(BlockFace.DOWN).getRelative(BlockFace.EAST));
-//				breaks.add(e.getBlock().getRelative(BlockFace.DOWN).getRelative(BlockFace.WEST));
-//				breaks.add(e.getBlock().getRelative(BlockFace.NORTH));
-//				breaks.add(e.getBlock().getRelative(BlockFace.SOUTH));
-//				breaks.add(e.getBlock().getRelative(BlockFace.EAST));
-//				breaks.add(e.getBlock().getRelative(BlockFace.WEST));
-//				breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.UP));
-//				breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.DOWN));
-//				breaks.add(e.getBlock().getRelative(BlockFace.WEST).getRelative(BlockFace.UP));
-//				breaks.add(e.getBlock().getRelative(BlockFace.WEST).getRelative(BlockFace.DOWN));
-//				breaks.add(e.getBlock().getRelative(BlockFace.EAST).getRelative(BlockFace.UP));
-//				breaks.add(e.getBlock().getRelative(BlockFace.EAST).getRelative(BlockFace.DOWN));
-//				breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.UP));
-//				breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.DOWN));
-//				breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.EAST).getRelative(BlockFace.UP));
-//				breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.EAST).getRelative(BlockFace.DOWN));
-//				breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.WEST).getRelative(BlockFace.UP));
-//				breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.WEST).getRelative(BlockFace.DOWN));
-//				breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.EAST).getRelative(BlockFace.UP));
-//				breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.EAST).getRelative(BlockFace.DOWN));
-//				breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.WEST).getRelative(BlockFace.UP));
-//				breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.WEST).getRelative(BlockFace.DOWN));
-//				breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.EAST));
-//				breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.WEST));
-//				breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.EAST));
-//				breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.WEST));
-//			}
-//			
-//			breaks.removeDuplicates();
-//			breaks.pickRandom();
-//			ignored.add(e.getPlayer());
-//			e.getPlayer().getItemInHand().setDurability((short) (e.getPlayer().getItemInHand().getDurability() + breaks.size()));
-//			
-//			new Task(0)
-//			{
-//				@SuppressWarnings("deprecation")
-//				@Override
-//				public void run()
-//				{
-//					for(int k = 0; k < level; k++)
-//					{
-//						if(breaks.isEmpty())
-//						{
-//							cancel();
-//							ignored.remove(e.getPlayer());
-//							return;
-//						}
-//						
-//						Block b = breaks.pop();
-//						BlockBreakEvent bbe = new BlockBreakEvent(b, e.getPlayer());
-//						callEvent(bbe);
-//						
-//						if(!bbe.isCancelled() && !b.getType().equals(Material.BEDROCK))
-//						{
-//							b.breakNaturally(e.getPlayer().getItemInHand());
-//							b.getWorld().playEffect(b.getLocation().add(0.5, 0.5, 0.5), Effect.TILE_BREAK, b.getTypeId());
-//						}
-//					}
-//				}
-//			};
-//		}
+		// TODO sdfsdfsdfsdf
+		// if(e.getPlayer().getItemInHand() != null &&
+		// EnchantmentAPI.itemHasEnchantment(e.getPlayer().getItemInHand(),
+		// "Blast"))
+		// {
+		// if(ignored.contains(e.getPlayer()))
+		// {
+		// return;
+		// }
+		//
+		// int level =
+		// EnchantmentAPI.getEnchantments(e.getPlayer().getItemInHand()).get(EnchantmentAPI.getEnchantment("Blast"));
+		// GList<Block> breaks = new GList<Block>();
+		// breaks.add(e.getBlock().getRelative(BlockFace.UP));
+		// breaks.add(e.getBlock().getRelative(BlockFace.DOWN));
+		//
+		// if(level > 1)
+		// {
+		// breaks.add(e.getBlock().getRelative(BlockFace.UP).getRelative(BlockFace.NORTH));
+		// breaks.add(e.getBlock().getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH));
+		// breaks.add(e.getBlock().getRelative(BlockFace.UP).getRelative(BlockFace.EAST));
+		// breaks.add(e.getBlock().getRelative(BlockFace.UP).getRelative(BlockFace.WEST));
+		// breaks.add(e.getBlock().getRelative(BlockFace.DOWN).getRelative(BlockFace.NORTH));
+		// breaks.add(e.getBlock().getRelative(BlockFace.DOWN).getRelative(BlockFace.SOUTH));
+		// breaks.add(e.getBlock().getRelative(BlockFace.DOWN).getRelative(BlockFace.EAST));
+		// breaks.add(e.getBlock().getRelative(BlockFace.DOWN).getRelative(BlockFace.WEST));
+		// breaks.add(e.getBlock().getRelative(BlockFace.NORTH));
+		// breaks.add(e.getBlock().getRelative(BlockFace.SOUTH));
+		// breaks.add(e.getBlock().getRelative(BlockFace.EAST));
+		// breaks.add(e.getBlock().getRelative(BlockFace.WEST));
+		// breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.UP));
+		// breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.DOWN));
+		// breaks.add(e.getBlock().getRelative(BlockFace.WEST).getRelative(BlockFace.UP));
+		// breaks.add(e.getBlock().getRelative(BlockFace.WEST).getRelative(BlockFace.DOWN));
+		// breaks.add(e.getBlock().getRelative(BlockFace.EAST).getRelative(BlockFace.UP));
+		// breaks.add(e.getBlock().getRelative(BlockFace.EAST).getRelative(BlockFace.DOWN));
+		// breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.UP));
+		// breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.DOWN));
+		// breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.EAST).getRelative(BlockFace.UP));
+		// breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.EAST).getRelative(BlockFace.DOWN));
+		// breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.WEST).getRelative(BlockFace.UP));
+		// breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.WEST).getRelative(BlockFace.DOWN));
+		// breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.EAST).getRelative(BlockFace.UP));
+		// breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.EAST).getRelative(BlockFace.DOWN));
+		// breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.WEST).getRelative(BlockFace.UP));
+		// breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.WEST).getRelative(BlockFace.DOWN));
+		// breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.EAST));
+		// breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.WEST));
+		// breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.EAST));
+		// breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.WEST));
+		// }
+		//
+		// breaks.removeDuplicates();
+		// breaks.pickRandom();
+		// ignored.add(e.getPlayer());
+		// e.getPlayer().getItemInHand().setDurability((short)
+		// (e.getPlayer().getItemInHand().getDurability() + breaks.size()));
+		//
+		// new Task(0)
+		// {
+		// @SuppressWarnings("deprecation")
+		// @Override
+		// public void run()
+		// {
+		// for(int k = 0; k < level; k++)
+		// {
+		// if(breaks.isEmpty())
+		// {
+		// cancel();
+		// ignored.remove(e.getPlayer());
+		// return;
+		// }
+		//
+		// Block b = breaks.pop();
+		// BlockBreakEvent bbe = new BlockBreakEvent(b, e.getPlayer());
+		// callEvent(bbe);
+		//
+		// if(!bbe.isCancelled() && !b.getType().equals(Material.BEDROCK))
+		// {
+		// b.breakNaturally(e.getPlayer().getItemInHand());
+		// b.getWorld().playEffect(b.getLocation().add(0.5, 0.5, 0.5),
+		// Effect.TILE_BREAK, b.getTypeId());
+		// }
+		// }
+		// }
+		// };
+		// }
 	}
 	
 	@EventHandler
@@ -1334,7 +1339,7 @@ public class EffexController extends ConfigurableController
 		
 		if(targ != null && drop != null)
 		{
-			if(drop.getType().equals(Material.BOOK) && (targ.getType().equals(Material.FISHING_ROD) || targ.getType().toString().contains("SWORD") || targ.getType().toString().contains("HOE") || targ.getType().toString().contains("SPADE") || targ.getType().toString().contains("AXE") || targ.getType().toString().contains("SHEAR") || targ.getType().toString().contains("BOOT") || targ.getType().toString().contains("LEGG") || targ.getType().toString().contains("CHESTPL") || targ.getType().toString().contains("HELMET") || targ.getType().toString().equals("TNT")))
+			if(drop.getType().equals(Material.BOOK) && (targ.getType().equals(Material.FISHING_ROD) || targ.getType().toString().contains("SWORD") || targ.getType().toString().contains("HOE") || targ.getType().toString().contains("SPADE") || targ.getType().toString().contains("AXE") || targ.getType().toString().contains("SHEAR") || targ.getType().toString().contains("BOOT") || targ.getType().toString().contains("LEGG") || targ.getType().toString().contains("CHESTPL") || targ.getType().toString().contains("HELMET") || targ.getType().toString().equals("TNT") || targ.getType().toString().equals("BOW")))
 			{
 				for(CustomEnchantment i : new GList<CustomEnchantment>(EnchantmentAPI.getEnchantments(drop).keySet()))
 				{
