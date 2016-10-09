@@ -7,6 +7,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EnderPearl;
@@ -21,6 +22,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -41,6 +43,7 @@ import org.cyberpwn.effex.enchantments.DeflectEnchantment;
 import org.cyberpwn.effex.enchantments.DefusedEnchantment;
 import org.cyberpwn.effex.enchantments.DemolitionEnchantment;
 import org.cyberpwn.effex.enchantments.DevilsGraceEnchantment;
+import org.cyberpwn.effex.enchantments.DrillEnchantment;
 import org.cyberpwn.effex.enchantments.EarthquakeEnchantment;
 import org.cyberpwn.effex.enchantments.EmpowermentEnchantment;
 import org.cyberpwn.effex.enchantments.EnderEnchantment;
@@ -134,6 +137,7 @@ public class EffexController extends ConfigurableController
 	private GMap<String, GList<Enchant>> tierSet;
 	private GMap<String, Range> ranged;
 	private GMap<String, Double> cost;
+	private GMap<Entity, Integer> ebs;
 	// TODO ybcdfgfghsgh
 	// private GList<Player> ignored;
 	
@@ -149,6 +153,7 @@ public class EffexController extends ConfigurableController
 		tierSet = new GMap<String, GList<Enchant>>();
 		ranged = new GMap<String, Range>();
 		cost = new GMap<String, Double>();
+		ebs = new GMap<Entity, Integer>();
 		// ignored = new GList<Player>();
 		// TODO asfdsadfasfd
 		
@@ -192,6 +197,7 @@ public class EffexController extends ConfigurableController
 		enchantments.add(new SpringEnchantment());
 		enchantments.add(new EnderEnchantment());
 		enchantments.add(new MagnetEnchantment());
+		enchantments.add(new DrillEnchantment());
 		
 		for(CustomEnchantment i : enchantments)
 		{
@@ -616,6 +622,11 @@ public class EffexController extends ConfigurableController
 								ParticleEffect.ENCHANTMENT_TABLE.display(0.9f, 6, i.clone().add(0.5, 1, 0.5), 12);
 							}
 							
+							if(j.equalsIgnoreCase("Drill"))
+							{
+								ParticleEffect.SPELL_WITCH.display(0.9f, 6, i.clone().add(0.5, 1, 0.5), 12);
+							}
+							
 							if(j.equalsIgnoreCase("Defusing"))
 							{
 								ParticleEffect.CRIT_MAGIC.display(0.6f, 2, i.clone().add(0.5, 1, 0.5), 12);
@@ -790,6 +801,28 @@ public class EffexController extends ConfigurableController
 	}
 	
 	@EventHandler
+	public void on(EntityExplodeEvent e)
+	{
+		if(ebs.containsKey(e.getEntity()))
+		{
+			int level = ebs.get(e.getEntity());
+			
+			for(Block i : e.blockList())
+			{
+				if(i.getType().equals(Material.TNT))
+				{
+					continue;
+				}
+				
+				if(M.r(0.45 + ((double) level / 10.0)))
+				{
+					i.breakNaturally(new ItemStack(Material.IRON_PICKAXE));
+				}
+			}
+		}
+	}
+	
+	@EventHandler
 	public void on(TNTPrimeEvent e)
 	{
 		if(enchanted.containsKey(e.getTntBlock().getLocation()))
@@ -818,6 +851,11 @@ public class EffexController extends ConfigurableController
 			{
 				e.getTntEntity().setFireTicks(200);
 				e.getTntEntity().setIsIncendiary(true);
+			}
+			
+			if(enchanted.get(e.getTntBlock().getLocation()).containsKey("Drill"))
+			{
+				ebs.put(e.getTntEntity(), enchanted.get(e.getTntBlock().getLocation()).get("Drill"));
 			}
 			
 			if(enchanted.get(e.getTntBlock().getLocation()).containsKey("Blast"))
@@ -902,6 +940,12 @@ public class EffexController extends ConfigurableController
 			{
 				int level = EnchantmentAPI.getEnchantments(e.getItemInHand()).get(EnchantmentAPI.getEnchantment("Blast"));
 				mapped.put("Blast", level);
+			}
+			
+			if(EnchantmentAPI.itemHasEnchantment(e.getItemInHand(), "Drill"))
+			{
+				int level = EnchantmentAPI.getEnchantments(e.getItemInHand()).get(EnchantmentAPI.getEnchantment("Drill"));
+				mapped.put("Drill", level);
 			}
 			
 			if(EnchantmentAPI.itemHasEnchantment(e.getItemInHand(), "Defusing"))
