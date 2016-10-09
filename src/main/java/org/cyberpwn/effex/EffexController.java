@@ -13,6 +13,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -47,6 +48,7 @@ import org.cyberpwn.effex.enchantments.DrillEnchantment;
 import org.cyberpwn.effex.enchantments.EarthquakeEnchantment;
 import org.cyberpwn.effex.enchantments.EmpowermentEnchantment;
 import org.cyberpwn.effex.enchantments.EnderEnchantment;
+import org.cyberpwn.effex.enchantments.EssenceEnchantment;
 import org.cyberpwn.effex.enchantments.ForgeEnchantment;
 import org.cyberpwn.effex.enchantments.FrostEnchantment;
 import org.cyberpwn.effex.enchantments.HeatSeekerEnchantment;
@@ -200,6 +202,7 @@ public class EffexController extends ConfigurableController
 		enchantments.add(new EnderEnchantment());
 		enchantments.add(new MagnetEnchantment());
 		enchantments.add(new DrillEnchantment());
+		enchantments.add(new EssenceEnchantment());
 		
 		for(CustomEnchantment i : enchantments)
 		{
@@ -1120,6 +1123,27 @@ public class EffexController extends ConfigurableController
 							{
 								e.getBlock().getWorld().dropItem(e.getBlock().getLocation(), i);
 							}
+						}
+					}
+				};
+			}
+		}
+		
+		if(e.getPlayer().getItemInHand() != null && EnchantmentAPI.itemHasEnchantment(e.getPlayer().getItemInHand(), "Essence"))
+		{
+			if(e.getExpToDrop() > 0)
+			{
+				new TaskLater()
+				{
+					@Override
+					public void run()
+					{
+						int enchantLevel = EnchantmentAPI.getEnchantments(e.getPlayer().getItemInHand()).get(EnchantmentAPI.getEnchantment("Essence"));
+						
+						for(int i = 0; i < enchantLevel; i++)
+						{
+							((ExperienceOrb) e.getBlock().getWorld().spawn(e.getBlock().getLocation(), ExperienceOrb.class)).setExperience((int) (40 * Math.random()));
+							((ExperienceOrb) e.getBlock().getWorld().spawn(e.getBlock().getLocation(), ExperienceOrb.class)).setExperience((int) (30 * Math.random()));
 						}
 					}
 				};
