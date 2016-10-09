@@ -1,6 +1,7 @@
 package org.cyberpwn.effex;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Effect;
@@ -1309,17 +1310,19 @@ public class EffexController extends ConfigurableController
 				new GSound(Sound.SLIME_ATTACK, 2.0f, 0.5f).play(target.getLocation());
 				
 				String pl = target.getName();
+				Date date = new Date();
+				@SuppressWarnings("deprecation")
+				String dd = (date.getMonth() + 1) + " / " + date.getDate() + " / " + (date.getYear() + 1900);
 				ItemStack skull = new ItemStack(Material.SKULL_ITEM);
 				skull.setDurability((short) 3);
 				SkullMeta sm = (SkullMeta) skull.getItemMeta();
 				sm.setOwner(pl);
 				sm.setDisplayName(ChatColor.DARK_RED + "" + pl);
-				sm.setLore(new GList<String>().qadd(C.YELLOW + "Killed by " + user.getName()));
+				sm.setLore(new GList<String>().qadd(C.YELLOW + "Killed by " + user.getName() + " on " + dd));
 				skull.setItemMeta(sm);
 				target.getLocation().getWorld().dropItem(target.getLocation(), skull);
 			}
 		}
-		
 	}
 	
 	@EventHandler
