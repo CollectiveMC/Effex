@@ -45,6 +45,7 @@ import org.cyberpwn.effex.enchantments.DefusedEnchantment;
 import org.cyberpwn.effex.enchantments.DemolitionEnchantment;
 import org.cyberpwn.effex.enchantments.DemolitionExpertEnchantment;
 import org.cyberpwn.effex.enchantments.DevilsGraceEnchantment;
+import org.cyberpwn.effex.enchantments.DoubleStrikeEnchantment;
 import org.cyberpwn.effex.enchantments.DrillEnchantment;
 import org.cyberpwn.effex.enchantments.EarthquakeEnchantment;
 import org.cyberpwn.effex.enchantments.EmpowermentEnchantment;
@@ -205,6 +206,7 @@ public class EffexController extends ConfigurableController
 		enchantments.add(new DrillEnchantment());
 		enchantments.add(new EssenceEnchantment());
 		enchantments.add(new DemolitionExpertEnchantment());
+		enchantments.add(new DoubleStrikeEnchantment());
 		
 		for(CustomEnchantment i : enchantments)
 		{
