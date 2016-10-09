@@ -81,6 +81,7 @@ import org.phantomapi.command.PhantomSender;
 import org.phantomapi.construct.Controllable;
 import org.phantomapi.construct.ControllerMessage;
 import org.phantomapi.construct.Ticked;
+import org.phantomapi.core.SyncStart;
 import org.phantomapi.event.PlayerKillPlayerEvent;
 import org.phantomapi.event.PlayerMoveBlockEvent;
 import org.phantomapi.event.TNTDispenseEvent;
@@ -118,6 +119,7 @@ import com.rit.sucy.CustomEnchantment;
 import com.rit.sucy.EnchantmentAPI;
 import net.md_5.bungee.api.ChatColor;
 
+@SyncStart
 @Ticked(1)
 public class EffexController extends ConfigurableController
 {
