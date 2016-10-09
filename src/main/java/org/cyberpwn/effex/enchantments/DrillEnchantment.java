@@ -53,6 +53,6 @@ public class DrillEnchantment extends CustomEnchantment implements AmbientEffect
 	@Override
 	public ETag[] getTags()
 	{
-		return ETag.get(ETag.OFFENSIVE, ETag.TNT);
+		return ETag.get(ETag.UTILITY);
 	}
 }

@@ -71,6 +71,6 @@ public class EssenceEnchantment extends CustomEnchantment implements AmbientEffe
 	@Override
 	public ETag[] getTags()
 	{
-		return ETag.get(ETag.OFFENSIVE, ETag.TNT);
+		return ETag.get(ETag.UTILITY);
 	}
 }
