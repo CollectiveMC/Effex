@@ -16,7 +16,7 @@ public class DrillEnchantment extends CustomEnchantment implements AmbientEffect
 	private double pow = 0.29;
 	public DrillEnchantment()
 	{
-		super("Drill", Matte.concat(Matte.tnt(), Matte.pickaxes()));
+		super("Drill", Matte.concat(Matte.tnt()));
 		
 		setMaxLevel(5);
 		setBase(5);
