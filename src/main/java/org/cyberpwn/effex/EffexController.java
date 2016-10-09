@@ -43,6 +43,7 @@ import org.cyberpwn.effex.enchantments.ColdBloodedEnchantment;
 import org.cyberpwn.effex.enchantments.DeflectEnchantment;
 import org.cyberpwn.effex.enchantments.DefusedEnchantment;
 import org.cyberpwn.effex.enchantments.DemolitionEnchantment;
+import org.cyberpwn.effex.enchantments.DemolitionExpertEnchantment;
 import org.cyberpwn.effex.enchantments.DevilsGraceEnchantment;
 import org.cyberpwn.effex.enchantments.DrillEnchantment;
 import org.cyberpwn.effex.enchantments.EarthquakeEnchantment;
@@ -203,6 +204,7 @@ public class EffexController extends ConfigurableController
 		enchantments.add(new MagnetEnchantment());
 		enchantments.add(new DrillEnchantment());
 		enchantments.add(new EssenceEnchantment());
+		enchantments.add(new DemolitionExpertEnchantment());
 		
 		for(CustomEnchantment i : enchantments)
 		{
@@ -969,6 +971,24 @@ public class EffexController extends ConfigurableController
 	@EventHandler
 	public void on(EntityDamageEvent e)
 	{
+		if(e.getCause().equals(DamageCause.BLOCK_EXPLOSION) || e.getCause().equals(DamageCause.ENTITY_EXPLOSION))
+		{
+			if(e.getEntity().getType().equals(EntityType.PLAYER))
+			{
+				Player p = (Player) e.getEntity();
+				
+				for(ItemStack i : p.getInventory().getArmorContents())
+				{
+					if(EnchantmentAPI.itemHasEnchantment(i, "Demolition Expert"))
+					{
+						e.setCancelled(true);
+						e.setDamage(0);
+						return;
+					}
+				}
+			}
+		}
+		
 		if(e.getCause().equals(DamageCause.FALL))
 		{
 			if(e.getEntity().getType().equals(EntityType.PLAYER))
