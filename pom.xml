@@ -99,6 +99,10 @@
 			<id>phantom</id>
 			<url>https://raw.githubusercontent.com/PhantomAPI/Phantom/master/repository/</url>
 		</repository>
+		<repository>
+			<id>global</id>
+			<url>http://nexus.cyberpwn.org/content/repositories/releases/</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -119,11 +123,9 @@
 			<systemPath>${req.lib}\EnchantmentAPI.jar</systemPath>
 		</dependency>
 		<dependency>
-			<groupId>Essentialsx</groupId>
-			<artifactId>essx</artifactId>
-			<scope>system</scope>
-			<systemPath>${req.lib}/EssentialsX-2.0.1_b421.jar</systemPath>
-			<version>1.8.8</version>
+			<groupId>org.cyberpwn</groupId>
+			<artifactId>essentials</artifactId>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 </project>
