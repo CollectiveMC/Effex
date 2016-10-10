@@ -34,6 +34,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.cyberpwn.effex.effect.AmbientEffect;
 import org.cyberpwn.effex.effect.VampiricEffect;
@@ -148,6 +149,7 @@ public class EffexController extends ConfigurableController
 	private GMap<String, Double> cost;
 	private GMap<Entity, Integer> ebs;
 	private GList<Player> ignored;
+	private int k;
 	
 	public EffexController(Controllable parentController)
 	{
@@ -163,6 +165,7 @@ public class EffexController extends ConfigurableController
 		cost = new GMap<String, Double>();
 		ebs = new GMap<Entity, Integer>();
 		ignored = new GList<Player>();
+		k = 0;
 		
 		register(npcController);
 	}
@@ -570,9 +573,12 @@ public class EffexController extends ConfigurableController
 		
 		for(Player i : Phantom.instance().onlinePlayers())
 		{
-			if(i.getInventory().getHelmet() != null && EnchantmentAPI.itemHasEnchantment(i.getInventory().getHelmet(), "Nocturnal"))
+			k++;
+			if(k > 20 && i.getInventory().getHelmet() != null && EnchantmentAPI.itemHasEnchantment(i.getInventory().getHelmet(), "Nocturnal"))
 			{
-				PE.NIGHT_VISION.a(1).d(800).c(i);
+				k = 0;
+				i.removePotionEffect(PotionEffectType.NIGHT_VISION);
+				PE.NIGHT_VISION.a(1).d(400).c(i);
 			}
 			
 			if(i.getInventory().getBoots() != null && EnchantmentAPI.itemHasEnchantment(i.getInventory().getBoots(), "Spring"))
