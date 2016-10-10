@@ -572,7 +572,7 @@ public class EffexController extends ConfigurableController
 		{
 			if(i.getInventory().getHelmet() != null && EnchantmentAPI.itemHasEnchantment(i.getInventory().getHelmet(), "Nocturnal"))
 			{
-				PE.NIGHT_VISION.a(1).d(10).c(i);
+				PE.NIGHT_VISION.a(1).d(800).c(i);
 			}
 			
 			if(i.getInventory().getBoots() != null && EnchantmentAPI.itemHasEnchantment(i.getInventory().getBoots(), "Spring"))

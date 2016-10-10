@@ -3,6 +3,7 @@ package org.cyberpwn.effex.enchantments;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.potion.PotionEffectType;
 import org.cyberpwn.effex.ETag;
 import org.cyberpwn.effex.Enchanted;
 import org.cyberpwn.effex.Matte;
@@ -28,6 +29,12 @@ public class NocturnalEnchantment extends CustomEnchantment implements AmbientEf
 		
 	}
 	
+	@Override
+	public void applyUnequipEffect(Player player, int enchantLevel)
+	{
+		player.removePotionEffect(PotionEffectType.NIGHT_VISION);
+	}
+
 	@Override
 	public void ambientPlay(Player p)
 	{
