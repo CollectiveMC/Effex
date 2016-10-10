@@ -120,11 +120,9 @@
 			<version>1.8.8-R0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.enchantshit</groupId>
-			<artifactId>enchantshit</artifactId>
-			<version>123.321</version>
-			<scope>system</scope>
-			<systemPath>${req.lib}\EnchantmentAPI.jar</systemPath>
+			<groupId>org.cyberpwn</groupId>
+			<artifactId>enchantmentapi</artifactId>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cyberpwn</groupId>
