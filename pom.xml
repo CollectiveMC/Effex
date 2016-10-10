@@ -104,7 +104,7 @@
 		<dependency>
 			<groupId>org.cyberpwn</groupId>
 			<artifactId>phantom</artifactId>
-			<version>P5</version>
+			<version>P8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
@@ -117,6 +117,13 @@
 			<version>123.321</version>
 			<scope>system</scope>
 			<systemPath>${req.lib}\EnchantmentAPI.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>Essentialsx</groupId>
+			<artifactId>essx</artifactId>
+			<scope>system</scope>
+			<systemPath>${req.lib}/EssentialsX-2.0.1_b421.jar</systemPath>
+			<version>1.8.8</version>
 		</dependency>
 	</dependencies>
 </project>
