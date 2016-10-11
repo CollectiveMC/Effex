@@ -119,6 +119,7 @@ import org.phantomapi.util.Range;
 import org.phantomapi.vfx.LineParticleManipulator;
 import org.phantomapi.vfx.ParticleEffect;
 import org.phantomapi.world.Area;
+import org.phantomapi.world.Blocks;
 import org.phantomapi.world.MaterialBlock;
 import org.phantomapi.world.PE;
 import org.phantomapi.world.W;
@@ -388,7 +389,7 @@ public class EffexController extends ConfigurableController
 										
 										ez.setTitle(C.LIGHT_PURPLE + name + " " + M.toRoman(level));
 										ez.addText(C.LIGHT_PURPLE + "Click to aquire for " + C.GREEN + F.f((int) EffexController.inst.getCost((Enchanted) en, level)) + " XP");
-										ez.addText(C.RED + F.pc(((Enchanted) en).getIntensity(level) * (double) level) + " More Intense");
+										ez.addText(C.RED + F.pc(((Enchanted) en).getIntensity(level) * level) + " More Intense");
 										wz.addElement(ez);
 										ixz++;
 									}
@@ -494,7 +495,7 @@ public class EffexController extends ConfigurableController
 			Element e = new PhantomElement(new ItemStack(Material.ENCHANTED_BOOK), new Slot(ix));
 			e.setTitle(C.LIGHT_PURPLE + i.getE().getClass().getSimpleName().replaceAll("Enchantment", "") + " " + M.toRoman(i.getLevel()));
 			e.addText(C.DARK_PURPLE + ((CustomEnchantment) i.getE()).getDescription());
-			e.addText(C.RED + "Chance: " + F.pc(1.0 / (double) tierSet.get(tier).size()));
+			e.addText(C.RED + "Chance: " + F.pc(1.0 / tierSet.get(tier).size()));
 			w.addElement(e);
 			ix++;
 		}
@@ -513,7 +514,7 @@ public class EffexController extends ConfigurableController
 			Element e = new PhantomElement(new ItemStack(Material.ENCHANTED_BOOK), new Slot(ix));
 			e.setTitle(C.LIGHT_PURPLE + i.getE().getClass().getSimpleName().replaceAll("Enchantment", "") + " " + M.toRoman(i.getLevel()));
 			e.addText(C.DARK_PURPLE + ((CustomEnchantment) i.getE()).getDescription());
-			e.addText(C.RED + "Chance: " + F.pc(1.0 / (double) tierSet.get(tier).size()));
+			e.addText(C.RED + "Chance: " + F.pc(1.0 / tierSet.get(tier).size()));
 			e.addText(C.YELLOW + "Member: " + i.getClass().getSimpleName());
 			e.addText(C.YELLOW + "Intensity: " + i.getE().getIntensity(1) * i.getLevel());
 			e.addText(C.YELLOW + "Max: " + ((CustomEnchantment) i.getE()).getMaxLevel());
@@ -527,7 +528,7 @@ public class EffexController extends ConfigurableController
 	
 	public double getCost(Enchanted e, int level)
 	{
-		return costMultiple * (e.getIntensity(1) * (double) level);
+		return costMultiple * (e.getIntensity(1) * level);
 	}
 	
 	public GList<Enchanted> getEnchantments()
@@ -542,6 +543,7 @@ public class EffexController extends ConfigurableController
 		return enchanted;
 	}
 	
+	@Override
 	public void onReadConfig()
 	{
 		for(CustomEnchantment i : enchantments)
@@ -557,11 +559,12 @@ public class EffexController extends ConfigurableController
 		
 	}
 	
+	@Override
 	public void onTick()
 	{
 		for(Player i : affected.k())
 		{
-			affected.put(i, (float) (affected.get(i) / (1.145f)));
+			affected.put(i, affected.get(i) / 1.145f);
 			NMSX.showWeather(i, affected.get(i) > 6f ? 6f : affected.get(i));
 			affected.put(i, affected.get(i) > 6f ? 6f : affected.get(i));
 			
@@ -797,7 +800,7 @@ public class EffexController extends ConfigurableController
 			{
 				int level = EnchantmentAPI.getEnchantments(i).get(EnchantmentAPI.getEnchantment("Moss"));
 				
-				if(M.r(((double) level / 15.0)))
+				if(M.r(level / 15.0))
 				{
 					i.setDurability((short) (i.getDurability() - 1 < 0 ? 0 : i.getDurability() - 1));
 				}
@@ -809,7 +812,7 @@ public class EffexController extends ConfigurableController
 		{
 			int level = EnchantmentAPI.getEnchantments(p.getItemInHand()).get(EnchantmentAPI.getEnchantment("Moss"));
 			
-			if(M.r(((double) level / 15.0)))
+			if(M.r(level / 15.0))
 			{
 				p.getItemInHand().setDurability((short) (p.getItemInHand().getDurability() - 1 < 0 ? 0 : p.getItemInHand().getDurability() - 1));
 			}
@@ -830,7 +833,7 @@ public class EffexController extends ConfigurableController
 					continue;
 				}
 				
-				if(M.r(0.45 + ((double) level / 10.0)))
+				if(M.r(0.45 + level / 10.0))
 				{
 					i.breakNaturally(new ItemStack(Material.IRON_PICKAXE));
 				}
@@ -876,12 +879,12 @@ public class EffexController extends ConfigurableController
 			
 			if(enchanted.get(e.getTntBlock().getLocation()).containsKey("Blast"))
 			{
-				e.getTntEntity().setYield((enchanted.get(e.getTntBlock().getLocation()).get("Blast")) + 3f);
+				e.getTntEntity().setYield(enchanted.get(e.getTntBlock().getLocation()).get("Blast") + 3f);
 			}
 			
 			if(enchanted.get(e.getTntBlock().getLocation()).containsKey("Defusing"))
 			{
-				e.getTntEntity().setFuseTicks((e.getTntEntity().getFuseTicks() / enchanted.get(e.getTntBlock().getLocation()).get("Defusing")));
+				e.getTntEntity().setFuseTicks(e.getTntEntity().getFuseTicks() / enchanted.get(e.getTntBlock().getLocation()).get("Defusing"));
 			}
 			
 			enchanted.remove(e.getTntBlock().getLocation());
@@ -923,12 +926,12 @@ public class EffexController extends ConfigurableController
 			
 			if(mapped.containsKey(EnchantmentAPI.getEnchantment("Blast")))
 			{
-				e.getTNT().setYield((mapped.get(EnchantmentAPI.getEnchantment("Blast"))) + 3f);
+				e.getTNT().setYield(mapped.get(EnchantmentAPI.getEnchantment("Blast")) + 3f);
 			}
 			
 			if(mapped.containsKey(EnchantmentAPI.getEnchantment("Defusing")))
 			{
-				e.getTNT().setFuseTicks((e.getTNT().getFuseTicks() / mapped.get(EnchantmentAPI.getEnchantment("Defusing"))));
+				e.getTNT().setFuseTicks(e.getTNT().getFuseTicks() / mapped.get(EnchantmentAPI.getEnchantment("Defusing")));
 			}
 		}
 	}
@@ -1031,7 +1034,7 @@ public class EffexController extends ConfigurableController
 					int level = EnchantmentAPI.getEnchantments(i).get(EnchantmentAPI.getEnchantment("Alchemist"));
 					int bottles = W.count(e.getPlayer(), new MaterialBlock(Material.GLASS_BOTTLE));
 					
-					if(M.r(0.38 + ((double) level / 15.0)))
+					if(M.r(0.38 + level / 15.0))
 					{
 						ItemStack is = e.getItem().clone();
 						p.sendMessage("** Potion Saved **");
@@ -1055,9 +1058,14 @@ public class EffexController extends ConfigurableController
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void on(BlockBreakEvent e)
 	{
+		if(!Blocks.canModify(e.getPlayer(), e.getBlock()))
+		{
+			return;
+		}
+		
 		if(e.getBlock().getType().equals(Material.TNT))
 		{
 			if(enchanted.containsKey(e.getBlock().getLocation()))
@@ -1171,8 +1179,8 @@ public class EffexController extends ConfigurableController
 						
 						for(int i = 0; i < enchantLevel; i++)
 						{
-							((ExperienceOrb) e.getBlock().getWorld().spawn(e.getBlock().getLocation(), ExperienceOrb.class)).setExperience((int) (40 * Math.random()));
-							((ExperienceOrb) e.getBlock().getWorld().spawn(e.getBlock().getLocation(), ExperienceOrb.class)).setExperience((int) (30 * Math.random()));
+							e.getBlock().getWorld().spawn(e.getBlock().getLocation(), ExperienceOrb.class).setExperience((int) (40 * Math.random()));
+							e.getBlock().getWorld().spawn(e.getBlock().getLocation(), ExperienceOrb.class).setExperience((int) (30 * Math.random()));
 						}
 					}
 				};
@@ -1276,10 +1284,26 @@ public class EffexController extends ConfigurableController
 						}
 						
 						Block b = breaks.pop();
+						
+						if(b.getType().equals(Material.BEDROCK))
+						{
+							continue;
+						}
+						
+						if(b.getType().equals(Material.MOB_SPAWNER))
+						{
+							continue;
+						}
+						
+						if(!Blocks.canModify(e.getPlayer(), b))
+						{
+							continue;
+						}
+						
 						BlockBreakEvent bbe = new BlockBreakEvent(b, e.getPlayer());
 						callEvent(bbe);
 						
-						if(!bbe.isCancelled() && !b.getType().equals(Material.BEDROCK))
+						if(!bbe.isCancelled() && !b.getType().equals(Material.BEDROCK) || !bbe.isCancelled() && !b.getType().equals(Material.MOB_SPAWNER))
 						{
 							b.breakNaturally(e.getPlayer().getItemInHand());
 							b.getWorld().playEffect(b.getLocation().add(0.5, 0.5, 0.5), Effect.TILE_BREAK, b.getTypeId());
@@ -1301,9 +1325,9 @@ public class EffexController extends ConfigurableController
 		{
 			int enchantLevel = EnchantmentAPI.getEnchantments(is).get(EnchantmentAPI.getEnchantment("Beheading"));
 			
-			if(Math.random() > 0.565 - (enchantLevel / 5))
+			if(Math.random() > 0.565 - enchantLevel / 5)
 			{
-				Location a = P.getHand((Player) user);
+				Location a = P.getHand(user);
 				Vector dir = VectorMath.direction(a, target.getLocation().add(0, 1.5, 0));
 				Location b = target.getEyeLocation();
 				
@@ -1318,7 +1342,7 @@ public class EffexController extends ConfigurableController
 				String pl = target.getName();
 				Date date = new Date();
 				@SuppressWarnings("deprecation")
-				String dd = (date.getMonth() + 1) + " / " + date.getDate() + " / " + (date.getYear() + 1900);
+				String dd = date.getMonth() + 1 + " / " + date.getDate() + " / " + (date.getYear() + 1900);
 				ItemStack skull = new ItemStack(Material.SKULL_ITEM);
 				skull.setDurability((short) 3);
 				SkullMeta sm = (SkullMeta) skull.getItemMeta();
@@ -1352,7 +1376,7 @@ public class EffexController extends ConfigurableController
 							{
 								int level = EnchantmentAPI.getEnchantments(is).get(EnchantmentAPI.getEnchantment("Deflection"));
 								
-								if(Math.random() > 0.999 - ((double) level / 4.0))
+								if(Math.random() > 0.999 - level / 4.0)
 								{
 									e.setCancelled(true);
 									NMSX.breakParticles(e.getDamager().getLocation(), Material.WOOD, 8);
