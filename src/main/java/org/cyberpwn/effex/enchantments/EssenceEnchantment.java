@@ -8,6 +8,7 @@ import org.cyberpwn.effex.ETag;
 import org.cyberpwn.effex.Enchanted;
 import org.cyberpwn.effex.Matte;
 import org.cyberpwn.effex.effect.AmbientEffect;
+import org.phantomapi.sync.S;
 import org.phantomapi.sync.TaskLater;
 import org.phantomapi.util.P;
 import org.phantomapi.vfx.ParticleEffect;
@@ -30,20 +31,26 @@ public class EssenceEnchantment extends CustomEnchantment implements AmbientEffe
 	@Override
 	public void applyEffect(LivingEntity user, LivingEntity target, int enchantLevel, EntityDamageByEntityEvent event)
 	{
-		new TaskLater(1)
+		new S()
 		{
 			@Override
-			public void run()
+			public void sync()
 			{
-				if(target.isDead())
+				new TaskLater(1)
 				{
-					for(int i = 0; i < enchantLevel; i++)
+					@Override
+					public void run()
 					{
-						target.getWorld().spawn(target.getLocation(), ExperienceOrb.class).setExperience((int) (5 * Math.random()));
-						target.getWorld().spawn(target.getLocation(), ExperienceOrb.class).setExperience((int) (6 * Math.random()));
-						target.getWorld().spawn(target.getLocation(), ExperienceOrb.class).setExperience((int) (7 * Math.random()));
+						if(target.isDead())
+						{
+							for(int i = 0; i < enchantLevel; i++)
+							{
+								target.getWorld().spawn(target.getLocation(), ExperienceOrb.class).setExperience((int) (11 * Math.random()));
+								target.getWorld().spawn(target.getLocation(), ExperienceOrb.class).setExperience((int) (7 * Math.random()));
+							}
+						}
 					}
-				}
+				};
 			}
 		};
 	}

@@ -26,6 +26,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -43,6 +44,7 @@ import org.cyberpwn.effex.enchantments.AntiGravityEnchantment;
 import org.cyberpwn.effex.enchantments.BeheadingEnchantment;
 import org.cyberpwn.effex.enchantments.BlastEnchantment;
 import org.cyberpwn.effex.enchantments.BlessingEnchantment;
+import org.cyberpwn.effex.enchantments.ButcherEnchantment;
 import org.cyberpwn.effex.enchantments.ColdBloodedEnchantment;
 import org.cyberpwn.effex.enchantments.DeflectEnchantment;
 import org.cyberpwn.effex.enchantments.DefusedEnchantment;
@@ -212,6 +214,7 @@ public class EffexController extends ConfigurableController
 		enchantments.add(new EssenceEnchantment());
 		enchantments.add(new DemolitionExpertEnchantment());
 		enchantments.add(new DoubleStrikeEnchantment());
+		enchantments.add(new ButcherEnchantment());
 		
 		for(CustomEnchantment i : enchantments)
 		{
@@ -1179,8 +1182,8 @@ public class EffexController extends ConfigurableController
 						
 						for(int i = 0; i < enchantLevel; i++)
 						{
-							e.getBlock().getWorld().spawn(e.getBlock().getLocation(), ExperienceOrb.class).setExperience((int) (40 * Math.random()));
-							e.getBlock().getWorld().spawn(e.getBlock().getLocation(), ExperienceOrb.class).setExperience((int) (30 * Math.random()));
+							e.getBlock().getWorld().spawn(e.getBlock().getLocation(), ExperienceOrb.class).setExperience((int) (11 * Math.random()));
+							e.getBlock().getWorld().spawn(e.getBlock().getLocation(), ExperienceOrb.class).setExperience((int) (7 * Math.random()));
 						}
 					}
 				};
@@ -1311,6 +1314,42 @@ public class EffexController extends ConfigurableController
 					}
 				}
 			};
+		}
+	}
+	
+	@EventHandler
+	public void on(EntityDeathEvent e)
+	{
+		if(e.getEntity() instanceof Player)
+		{
+			
+		}
+		
+		else
+		{
+			Player p = e.getEntity().getKiller();
+			
+			if(p != null)
+			{
+				ItemStack is = p.getItemInHand();
+				
+				if(is != null && EnchantmentAPI.itemHasEnchantment(is, "Butcher"))
+				{
+					int level = EnchantmentAPI.getEnchantments(is).get(EnchantmentAPI.getEnchantment("Butcher"));
+					
+					if(M.r(0.2 * level))
+					{
+						for(ItemStack i : new GList<ItemStack>(e.getDrops()))
+						{
+							e.getDrops().remove(i);
+							ItemStack isx = i.clone();
+							isx.setAmount(i.getAmount() * 2);
+							e.getDrops().add(isx);
+							ParticleEffect.CLOUD.display(0.1f, 10, e.getEntity().getLocation(), 32);
+						}
+					}
+				}
+			}
 		}
 	}
 	
