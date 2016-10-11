@@ -39,9 +39,9 @@ public class EssenceEnchantment extends CustomEnchantment implements AmbientEffe
 				{
 					for(int i = 0; i < enchantLevel; i++)
 					{
-						((ExperienceOrb) target.getWorld().spawn(target.getLocation(), ExperienceOrb.class)).setExperience((int) (40 * Math.random()));
-						((ExperienceOrb) target.getWorld().spawn(target.getLocation(), ExperienceOrb.class)).setExperience((int) (30 * Math.random()));
-						((ExperienceOrb) target.getWorld().spawn(target.getLocation(), ExperienceOrb.class)).setExperience((int) (20 * Math.random()));
+						target.getWorld().spawn(target.getLocation(), ExperienceOrb.class).setExperience((int) (5 * Math.random()));
+						target.getWorld().spawn(target.getLocation(), ExperienceOrb.class).setExperience((int) (6 * Math.random()));
+						target.getWorld().spawn(target.getLocation(), ExperienceOrb.class).setExperience((int) (7 * Math.random()));
 					}
 				}
 			}
@@ -63,6 +63,7 @@ public class EssenceEnchantment extends CustomEnchantment implements AmbientEffe
 		return pow;
 	}
 	
+	@Override
 	public void setPow(double pow)
 	{
 		this.pow = pow;
