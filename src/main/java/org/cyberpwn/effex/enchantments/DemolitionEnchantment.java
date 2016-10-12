@@ -12,6 +12,7 @@ import com.rit.sucy.CustomEnchantment;
 public class DemolitionEnchantment extends CustomEnchantment implements AmbientEffect, Enchanted
 {
 	private double pow = 0.51;
+	
 	public DemolitionEnchantment()
 	{
 		super("Demolition", Matte.concat(Matte.armor()));
@@ -25,19 +26,27 @@ public class DemolitionEnchantment extends CustomEnchantment implements AmbientE
 	@Override
 	public void applyDefenseEffect(LivingEntity user, LivingEntity target, int enchantLevel, EntityDamageEvent event)
 	{
-		if(Math.random() > 0.787 - (enchantLevel / 5))
+		if(Math.random() > 0.787 - enchantLevel / 5)
 		{
-			double h = user.getHealth();
-			user.getLocation().getWorld().createExplosion(user.getLocation().getX(), user.getLocation().getY(), user.getLocation().getZ(), 0f, false, false);
-			user.setHealth(h);
-			target.damage(2);
+			try
+			{
+				double h = user.getHealth();
+				user.getLocation().getWorld().createExplosion(user.getLocation().getX(), user.getLocation().getY(), user.getLocation().getZ(), 0f, false, false);
+				user.setHealth(h);
+				target.damage(2);
+			}
+			
+			catch(Exception e)
+			{
+				
+			}
 		}
 	}
 	
 	@Override
 	public void ambientPlay(Player p)
 	{
-
+		
 	}
 	
 	@Override
@@ -46,11 +55,12 @@ public class DemolitionEnchantment extends CustomEnchantment implements AmbientE
 		return pow;
 	}
 	
+	@Override
 	public void setPow(double pow)
 	{
 		this.pow = pow;
 	}
-
+	
 	@Override
 	public ETag[] getTags()
 	{
