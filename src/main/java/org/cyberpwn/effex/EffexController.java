@@ -60,6 +60,7 @@ import org.cyberpwn.effex.enchantments.EssenceEnchantment;
 import org.cyberpwn.effex.enchantments.ForgeEnchantment;
 import org.cyberpwn.effex.enchantments.FrostEnchantment;
 import org.cyberpwn.effex.enchantments.HeatSeekerEnchantment;
+import org.cyberpwn.effex.enchantments.HellsCurseEnchantment;
 import org.cyberpwn.effex.enchantments.InfernoEnchantment;
 import org.cyberpwn.effex.enchantments.IronGraspEnchantment;
 import org.cyberpwn.effex.enchantments.LongShotEnchantment;
@@ -219,6 +220,8 @@ public class EffexController extends ConfigurableController
 		enchantments.add(new DoubleStrikeEnchantment());
 		enchantments.add(new ButcherEnchantment());
 		enchantments.add(new IronGraspEnchantment());
+		
+		EnchantmentAPI.registerCustomEnchantment(new HellsCurseEnchantment());
 		
 		for(CustomEnchantment i : enchantments)
 		{
@@ -798,6 +801,27 @@ public class EffexController extends ConfigurableController
 			if(EnchantmentAPI.itemHasEnchantment(i, "Stamina"))
 			{
 				e.getPlayer().setSaturation(100f);
+			}
+		}
+		
+		for(ItemStack i : p.getInventory().getArmorContents())
+		{
+			if(EnchantmentAPI.itemHasEnchantment(i, "Hells Curse"))
+			{
+				if(Blocks.canModify(e.getPlayer(), e.getPlayer().getLocation().getBlock()))
+				{
+					e.getPlayer().setAllowFlight(true);
+				}
+				
+				else
+				{
+					e.getPlayer().setAllowFlight(false);
+				}
+				
+				if(e.getPlayer().isFlying())
+				{
+					ParticleEffect.SMOKE_LARGE.display(0.1f, 3, e.getPlayer().getLocation(), 54);
+				}
 			}
 		}
 		
