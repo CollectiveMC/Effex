@@ -3,7 +3,7 @@ package org.cyberpwn.effex;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -1287,6 +1287,11 @@ public class EffexController extends ConfigurableController
 						}
 						
 						Block b = breaks.pop();
+						
+						if(!b.getType().toString().endsWith("STONE") && !b.getType().toString().endsWith("_ORE") && !b.getType().toString().startsWith("NETHER"))
+						{
+							continue;
+						}
 						
 						if(b.getType().equals(Material.BEDROCK))
 						{
