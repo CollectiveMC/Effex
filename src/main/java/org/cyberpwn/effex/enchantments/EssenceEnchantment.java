@@ -1,6 +1,5 @@
 package org.cyberpwn.effex.enchantments;
 
-import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -8,6 +7,8 @@ import org.cyberpwn.effex.ETag;
 import org.cyberpwn.effex.Enchanted;
 import org.cyberpwn.effex.Matte;
 import org.cyberpwn.effex.effect.AmbientEffect;
+import org.phantomapi.currency.ExperienceCurrency;
+import org.phantomapi.currency.Transaction;
 import org.phantomapi.sync.S;
 import org.phantomapi.sync.TaskLater;
 import org.phantomapi.util.P;
@@ -45,8 +46,11 @@ public class EssenceEnchantment extends CustomEnchantment implements AmbientEffe
 						{
 							for(int i = 0; i < enchantLevel; i++)
 							{
-								target.getWorld().spawn(target.getLocation(), ExperienceOrb.class).setExperience((int) (11 * Math.random()));
-								target.getWorld().spawn(target.getLocation(), ExperienceOrb.class).setExperience((int) (7 * Math.random()));
+								if(user instanceof Player)
+								{
+									Player p = (Player) user;
+									new Transaction(new ExperienceCurrency()).to(p).amount(1 + 18 * Math.random()).commit();
+								}
 							}
 						}
 					}

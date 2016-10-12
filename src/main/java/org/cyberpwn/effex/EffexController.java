@@ -16,7 +16,6 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -92,6 +91,8 @@ import org.phantomapi.construct.Controllable;
 import org.phantomapi.construct.ControllerMessage;
 import org.phantomapi.construct.Ticked;
 import org.phantomapi.core.SyncStart;
+import org.phantomapi.currency.ExperienceCurrency;
+import org.phantomapi.currency.Transaction;
 import org.phantomapi.event.PlayerKillPlayerEvent;
 import org.phantomapi.event.PlayerMoveBlockEvent;
 import org.phantomapi.event.TNTDispenseEvent;
@@ -1182,8 +1183,7 @@ public class EffexController extends ConfigurableController
 						
 						for(int i = 0; i < enchantLevel; i++)
 						{
-							e.getBlock().getWorld().spawn(e.getBlock().getLocation(), ExperienceOrb.class).setExperience((int) (11 * Math.random()));
-							e.getBlock().getWorld().spawn(e.getBlock().getLocation(), ExperienceOrb.class).setExperience((int) (7 * Math.random()));
+							new Transaction(new ExperienceCurrency()).to(e.getPlayer()).amount(1 + 18 * Math.random()).commit();
 						}
 					}
 				};
