@@ -485,7 +485,22 @@ public class EffexController extends ConfigurableController
 			ItemStack is = new ItemStack(Material.ENCHANTED_BOOK);
 			en.addToItem(is, e.getLevel());
 			ItemMeta im = is.getItemMeta();
-			im.setDisplayName(C.LIGHT_PURPLE + name + " " + M.toRoman(e.getLevel()));
+			
+			Double pc = (double) (e.getLevel() / en.getMaxLevel());
+			GList<C> cx = new GList<C>().qadd(C.GREEN).qadd(C.AQUA).qadd(C.YELLOW).qadd(C.DARK_PURPLE).qadd(C.LIGHT_PURPLE);
+			C v = C.RED;
+			
+			if(pc > 1.0 || pc < 0)
+			{
+				
+			}
+			
+			else
+			{
+				v = cx.get((int) (pc * (cx.size() - 1)));
+			}
+			
+			im.setDisplayName(v + C.stripColor(name) + " " + M.toRoman(e.getLevel()));
 			p.getInventory().addItem(is);
 		}
 		
