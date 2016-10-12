@@ -27,6 +27,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -60,6 +61,7 @@ import org.cyberpwn.effex.enchantments.ForgeEnchantment;
 import org.cyberpwn.effex.enchantments.FrostEnchantment;
 import org.cyberpwn.effex.enchantments.HeatSeekerEnchantment;
 import org.cyberpwn.effex.enchantments.InfernoEnchantment;
+import org.cyberpwn.effex.enchantments.IronGraspEnchantment;
 import org.cyberpwn.effex.enchantments.LongShotEnchantment;
 import org.cyberpwn.effex.enchantments.MagnetEnchantment;
 import org.cyberpwn.effex.enchantments.MossEnchantment;
@@ -216,6 +218,7 @@ public class EffexController extends ConfigurableController
 		enchantments.add(new DemolitionExpertEnchantment());
 		enchantments.add(new DoubleStrikeEnchantment());
 		enchantments.add(new ButcherEnchantment());
+		enchantments.add(new IronGraspEnchantment());
 		
 		for(CustomEnchantment i : enchantments)
 		{
@@ -819,6 +822,37 @@ public class EffexController extends ConfigurableController
 			if(M.r(level / 15.0))
 			{
 				p.getItemInHand().setDurability((short) (p.getItemInHand().getDurability() - 1 < 0 ? 0 : p.getItemInHand().getDurability() - 1));
+			}
+		}
+	}
+	
+	@EventHandler
+	public void on(PlayerDeathEvent e)
+	{
+		for(ItemStack i : new GList<ItemStack>(e.getDrops()))
+		{
+			if(EnchantmentAPI.itemHasEnchantment(i, "Iron Grasp"))
+			{
+				e.getDrops().remove(i);
+				
+				new TaskLater(10)
+				{
+					@Override
+					public void run()
+					{
+						PhantomInventory pi = new PhantomInventory(e.getEntity().getInventory());
+						
+						if(pi.hasSpace())
+						{
+							pi.addItem(i);
+						}
+						
+						else
+						{
+							e.getEntity().getWorld().dropItem(e.getEntity().getLocation(), i);
+						}
+					}
+				};
 			}
 		}
 	}
