@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -155,7 +154,6 @@ public class EffexController extends ConfigurableController
 	private GMap<String, Range> ranged;
 	private GMap<String, Double> cost;
 	private GMap<Entity, Integer> ebs;
-	private GList<Player> ignored;
 	private int k;
 	
 	public EffexController(Controllable parentController)
@@ -171,7 +169,6 @@ public class EffexController extends ConfigurableController
 		ranged = new GMap<String, Range>();
 		cost = new GMap<String, Double>();
 		ebs = new GMap<Entity, Integer>();
-		ignored = new GList<Player>();
 		k = 0;
 		
 		register(npcController);
@@ -601,6 +598,37 @@ public class EffexController extends ConfigurableController
 		
 		for(Player i : Phantom.instance().onlinePlayers())
 		{
+			if(Math.random() < 0.04)
+			{
+				for(ItemStack j : i.getInventory().getArmorContents())
+				{
+					if(EnchantmentAPI.itemHasEnchantment(j, "Moss"))
+					{
+						int level = EnchantmentAPI.getEnchantments(j).get(EnchantmentAPI.getEnchantment("Moss"));
+						
+						if(M.r(level / 15.0))
+						{
+							j.setDurability((short) (j.getDurability() - level < 0 ? 0 : j.getDurability() - level));
+						}
+					}
+				}
+				
+				if(EnchantmentAPI.itemHasEnchantment(i.getItemInHand(), "Moss"))
+				{
+					int level = EnchantmentAPI.getEnchantments(i.getItemInHand()).get(EnchantmentAPI.getEnchantment("Moss"));
+					
+					if(M.r(level / 15.0))
+					{
+						i.getItemInHand().setDurability((short) (i.getItemInHand().getDurability() - 1 * level < 0 ? 0 : i.getItemInHand().getDurability() - 1 * level));
+						
+						if(i.getItemInHand().getDurability() != 0)
+						{
+							ParticleEffect.VILLAGER_HAPPY.display(5.5f, 4, P.getHand(i), 3);
+						}
+					}
+				}
+			}
+			
 			k++;
 			if(k > 20 && i.getInventory().getHelmet() != null && EnchantmentAPI.itemHasEnchantment(i.getInventory().getHelmet(), "Nocturnal"))
 			{
@@ -837,30 +865,6 @@ public class EffexController extends ConfigurableController
 				{
 					ParticleEffect.SMOKE_LARGE.display(0.1f, 3, e.getPlayer().getLocation(), 54);
 				}
-			}
-		}
-		
-		for(ItemStack i : p.getInventory().getArmorContents())
-		{
-			if(EnchantmentAPI.itemHasEnchantment(i, "Moss"))
-			{
-				int level = EnchantmentAPI.getEnchantments(i).get(EnchantmentAPI.getEnchantment("Moss"));
-				
-				if(M.r(level / 15.0))
-				{
-					i.setDurability((short) (i.getDurability() - 1 < 0 ? 0 : i.getDurability() - 1));
-				}
-				
-			}
-		}
-		
-		if(EnchantmentAPI.itemHasEnchantment(p.getItemInHand(), "Moss"))
-		{
-			int level = EnchantmentAPI.getEnchantments(p.getItemInHand()).get(EnchantmentAPI.getEnchantment("Moss"));
-			
-			if(M.r(level / 15.0))
-			{
-				p.getItemInHand().setDurability((short) (p.getItemInHand().getDurability() - 1 < 0 ? 0 : p.getItemInHand().getDurability() - 1));
 			}
 		}
 	}
@@ -1170,7 +1174,7 @@ public class EffexController extends ConfigurableController
 			}
 		}
 		
-		if(e.getPlayer().getInventory().getBoots() != null && EnchantmentAPI.itemHasEnchantment(e.getPlayer().getInventory().getBoots(), "Magnet"))
+		if(e.getPlayer().getInventory().getBoots() != null && EnchantmentAPI.itemHasEnchantment(e.getPlayer().getInventory().getBoots(), "Magnetic"))
 		{
 			if(!e.getPlayer().getGameMode().equals(GameMode.CREATIVE))
 			{
@@ -1296,11 +1300,6 @@ public class EffexController extends ConfigurableController
 		
 		if(e.getPlayer().getItemInHand() != null && EnchantmentAPI.itemHasEnchantment(e.getPlayer().getItemInHand(), "Blast") && e.getPlayer().getItemInHand().getType().toString().endsWith("_PICKAXE"))
 		{
-			if(ignored.contains(e.getPlayer()))
-			{
-				return;
-			}
-			
 			int level = EnchantmentAPI.getEnchantments(e.getPlayer().getItemInHand()).get(EnchantmentAPI.getEnchantment("Blast"));
 			GList<Block> breaks = new GList<Block>();
 			breaks.add(e.getBlock().getRelative(BlockFace.UP));
@@ -1340,25 +1339,23 @@ public class EffexController extends ConfigurableController
 				breaks.add(e.getBlock().getRelative(BlockFace.NORTH).getRelative(BlockFace.WEST));
 				breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.EAST));
 				breaks.add(e.getBlock().getRelative(BlockFace.SOUTH).getRelative(BlockFace.WEST));
+				breaks.shuffle();
 			}
 			
 			breaks.removeDuplicates();
 			breaks.pickRandom();
-			ignored.add(e.getPlayer());
 			e.getPlayer().getItemInHand().setDurability((short) (e.getPlayer().getItemInHand().getDurability() + breaks.size()));
 			
-			new Task(0)
+			new Task(6 - level)
 			{
-				@SuppressWarnings("deprecation")
 				@Override
 				public void run()
 				{
-					for(int k = 0; k < level; k++)
+					for(int k = 0; k < 5; k++)
 					{
 						if(breaks.isEmpty())
 						{
 							cancel();
-							ignored.remove(e.getPlayer());
 							return;
 						}
 						
@@ -1384,13 +1381,74 @@ public class EffexController extends ConfigurableController
 							continue;
 						}
 						
-						BlockBreakEvent bbe = new BlockBreakEvent(b, e.getPlayer());
-						callEvent(bbe);
+						ItemStack cust = null;
 						
-						if(!bbe.isCancelled() && !b.getType().equals(Material.BEDROCK) || !bbe.isCancelled() && !b.getType().equals(Material.MOB_SPAWNER))
+						try
 						{
-							b.breakNaturally(e.getPlayer().getItemInHand());
-							b.getWorld().playEffect(b.getLocation().add(0.5, 0.5, 0.5), Effect.TILE_BREAK, b.getTypeId());
+							if((b.getType().equals(Material.IRON_ORE) || b.getType().equals(Material.GOLD_ORE)) && EnchantmentAPI.itemHasEnchantment(e.getPlayer().getItemInHand(), "Forge"))
+							{
+								if(b.getType().equals(Material.IRON_ORE))
+								{
+									cust = new ItemStack(Material.IRON_INGOT);
+								}
+								
+								if(b.getType().equals(Material.GOLD_ORE))
+								{
+									cust = new ItemStack(Material.GOLD_INGOT);
+								}
+								
+								ParticleEffect.LAVA.display(0.2f, 4, b.getLocation(), 24);
+								new GSound(Sound.FIZZ, 0.4f, 1f).play(b.getLocation());
+							}
+						}
+						
+						catch(Exception e)
+						{
+							
+						}
+						
+						GList<ItemStack> drops = new GList<ItemStack>();
+						
+						if(cust != null)
+						{
+							NMSX.breakParticles(b.getLocation().add(0.5, 0.5, 0.5), b.getType(), 12);
+							new GSound(Sound.DIG_STONE, 1f, 1f).play(b.getLocation());
+							b.setType(Material.AIR);
+							drops.add(cust);
+						}
+						
+						else
+						{
+							NMSX.breakParticles(b.getLocation().add(0.5, 0.5, 0.5), b.getType(), 12);
+							new GSound(Sound.DIG_STONE, 1f, 1f).play(b.getLocation());
+							drops = new GList<ItemStack>(b.getDrops(e.getPlayer().getItemInHand()));
+							b.setType(Material.AIR);
+						}
+						
+						ItemStack boots = e.getPlayer().getInventory().getBoots();
+						
+						if(boots != null && EnchantmentAPI.itemHasEnchantment(boots, "Magnetic"))
+						{
+							for(ItemStack l : drops)
+							{
+								if(new PhantomInventory(e.getPlayer().getInventory()).hasSpace())
+								{
+									e.getPlayer().getInventory().addItem(l);
+								}
+								
+								else
+								{
+									b.getLocation().getWorld().dropItem(b.getLocation(), l);
+								}
+							}
+						}
+						
+						else
+						{
+							for(ItemStack l : drops)
+							{
+								b.getLocation().getWorld().dropItem(b.getLocation(), l);
+							}
 						}
 					}
 				}
