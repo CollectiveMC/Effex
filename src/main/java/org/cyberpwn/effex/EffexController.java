@@ -868,30 +868,33 @@ public class EffexController extends ConfigurableController
 	@EventHandler
 	public void on(PlayerDeathEvent e)
 	{
-		for(ItemStack i : new GList<ItemStack>(e.getDrops()))
+		if(M.r(0.8))
 		{
-			if(EnchantmentAPI.itemHasEnchantment(i, "Iron Grasp"))
+			for(ItemStack i : new GList<ItemStack>(e.getDrops()))
 			{
-				e.getDrops().remove(i);
-				
-				new TaskLater(10)
+				if(EnchantmentAPI.itemHasEnchantment(i, "Iron Grasp"))
 				{
-					@Override
-					public void run()
+					e.getDrops().remove(i);
+					
+					new TaskLater(10)
 					{
-						PhantomInventory pi = new PhantomInventory(e.getEntity().getInventory());
-						
-						if(pi.hasSpace())
+						@Override
+						public void run()
 						{
-							pi.addItem(i);
+							PhantomInventory pi = new PhantomInventory(e.getEntity().getInventory());
+							
+							if(pi.hasSpace())
+							{
+								pi.addItem(i);
+							}
+							
+							else
+							{
+								e.getEntity().getWorld().dropItem(e.getEntity().getLocation(), i);
+							}
 						}
-						
-						else
-						{
-							e.getEntity().getWorld().dropItem(e.getEntity().getLocation(), i);
-						}
-					}
-				};
+					};
+				}
 			}
 		}
 	}
