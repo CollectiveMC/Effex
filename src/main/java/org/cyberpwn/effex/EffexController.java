@@ -1178,6 +1178,11 @@ public class EffexController extends ConfigurableController
 		{
 			if(!e.getPlayer().getGameMode().equals(GameMode.CREATIVE))
 			{
+				if(e.getBlock().getType().equals(Material.MOB_SPAWNER))
+				{
+					return;
+				}
+				
 				Collection<ItemStack> is = e.getBlock().getDrops(e.getPlayer().getItemInHand());
 				e.setCancelled(true);
 				e.getBlock().setType(Material.AIR);
