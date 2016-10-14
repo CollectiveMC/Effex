@@ -1300,6 +1300,11 @@ public class EffexController extends ConfigurableController
 		
 		if(e.getPlayer().getItemInHand() != null && EnchantmentAPI.itemHasEnchantment(e.getPlayer().getItemInHand(), "Essence"))
 		{
+			if(!Blocks.canModify(e.getPlayer(), e.getBlock()))
+			{
+				return;
+			}
+			
 			if(e.getExpToDrop() > 0)
 			{
 				new TaskLater()
