@@ -49,7 +49,7 @@ public class EssenceEnchantment extends CustomEnchantment implements AmbientEffe
 								if(user instanceof Player)
 								{
 									Player p = (Player) user;
-									new Transaction(new ExperienceCurrency()).to(p).amount(1 + 18 * Math.random()).commit();
+									new Transaction(new ExperienceCurrency()).to(p).amount(1 + 18 * Math.random()).noDiff().commit();
 								}
 							}
 						}

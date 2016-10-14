@@ -112,7 +112,7 @@
 		<dependency>
 			<groupId>org.cyberpwn</groupId>
 			<artifactId>phantom</artifactId>
-			<version>S2</version>
+			<version>S4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>

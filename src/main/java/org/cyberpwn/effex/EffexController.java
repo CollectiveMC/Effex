@@ -1321,7 +1321,7 @@ public class EffexController extends ConfigurableController
 						
 						for(int i = 0; i < enchantLevel; i++)
 						{
-							new Transaction(new ExperienceCurrency()).to(e.getPlayer()).amount(1 + 18 * Math.random()).commit();
+							new Transaction(new ExperienceCurrency()).to(e.getPlayer()).amount(1 + 18 * Math.random()).noDiff().commit();
 						}
 					}
 				};
