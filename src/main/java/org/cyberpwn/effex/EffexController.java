@@ -1402,113 +1402,132 @@ public class EffexController extends ConfigurableController
 			
 			breaks.removeDuplicates();
 			breaks.pickRandom();
-			e.getPlayer().getItemInHand().setDurability((short) (e.getPlayer().getItemInHand().getDurability() + breaks.size()));
 			
-			new Task(6 - level)
+			new TaskLater()
 			{
 				@Override
 				public void run()
 				{
-					for(int k = 0; k < 5; k++)
+					e.getPlayer().getItemInHand().setDurability((short) (e.getPlayer().getItemInHand().getDurability() + breaks.size()));
+					
+					if(e.isCancelled())
 					{
-						if(breaks.isEmpty())
+						return;
+					}
+					
+					new Task(6 - level)
+					{
+						@Override
+						public void run()
 						{
-							cancel();
-							return;
-						}
-						
-						Block b = breaks.pop();
-						
-						if(!b.getType().toString().endsWith("STONE") && !b.getType().toString().endsWith("_ORE") && !b.getType().toString().startsWith("NETHER"))
-						{
-							continue;
-						}
-						
-						if(b.getType().equals(Material.BEDROCK))
-						{
-							continue;
-						}
-						
-						if(b.getType().equals(Material.MOB_SPAWNER))
-						{
-							continue;
-						}
-						
-						if(!Blocks.canModify(e.getPlayer(), b))
-						{
-							continue;
-						}
-						
-						ItemStack cust = null;
-						
-						try
-						{
-							if((b.getType().equals(Material.IRON_ORE) || b.getType().equals(Material.GOLD_ORE)) && EnchantmentAPI.itemHasEnchantment(e.getPlayer().getItemInHand(), "Forge"))
+							if(e.isCancelled())
 							{
-								if(b.getType().equals(Material.IRON_ORE))
-								{
-									cust = new ItemStack(Material.IRON_INGOT);
-								}
-								
-								if(b.getType().equals(Material.GOLD_ORE))
-								{
-									cust = new ItemStack(Material.GOLD_INGOT);
-								}
-								
-								ParticleEffect.LAVA.display(0.2f, 4, b.getLocation(), 24);
-								new GSound(Sound.FIZZ, 0.4f, 1f).play(b.getLocation());
+								cancel();
+								return;
 							}
-						}
-						
-						catch(Exception e)
-						{
 							
-						}
-						
-						GList<ItemStack> drops = new GList<ItemStack>();
-						
-						if(cust != null)
-						{
-							NMSX.breakParticles(b.getLocation().add(0.5, 0.5, 0.5), b.getType(), 12);
-							new GSound(Sound.DIG_STONE, 1f, 1f).play(b.getLocation());
-							b.setType(Material.AIR);
-							drops.add(cust);
-						}
-						
-						else
-						{
-							NMSX.breakParticles(b.getLocation().add(0.5, 0.5, 0.5), b.getType(), 12);
-							new GSound(Sound.DIG_STONE, 1f, 1f).play(b.getLocation());
-							drops = new GList<ItemStack>(b.getDrops(e.getPlayer().getItemInHand()));
-							b.setType(Material.AIR);
-						}
-						
-						ItemStack boots = e.getPlayer().getInventory().getBoots();
-						
-						if(boots != null && EnchantmentAPI.itemHasEnchantment(boots, "Magnetic"))
-						{
-							for(ItemStack l : drops)
+							for(int k = 0; k < 5; k++)
 							{
-								if(new PhantomInventory(e.getPlayer().getInventory()).hasSpace())
+								if(breaks.isEmpty())
 								{
-									e.getPlayer().getInventory().addItem(l);
+									cancel();
+									return;
+								}
+								
+								Block b = breaks.pop();
+								
+								if(!b.getType().toString().endsWith("STONE") && !b.getType().toString().endsWith("_ORE") && !b.getType().toString().startsWith("NETHER"))
+								{
+									continue;
+								}
+								
+								if(b.getType().equals(Material.BEDROCK))
+								{
+									continue;
+								}
+								
+								if(b.getType().equals(Material.MOB_SPAWNER))
+								{
+									continue;
+								}
+								
+								if(!Blocks.canModify(e.getPlayer(), b))
+								{
+									continue;
+								}
+								
+								ItemStack cust = null;
+								
+								try
+								{
+									if((b.getType().equals(Material.IRON_ORE) || b.getType().equals(Material.GOLD_ORE)) && EnchantmentAPI.itemHasEnchantment(e.getPlayer().getItemInHand(), "Forge"))
+									{
+										if(b.getType().equals(Material.IRON_ORE))
+										{
+											cust = new ItemStack(Material.IRON_INGOT);
+										}
+										
+										if(b.getType().equals(Material.GOLD_ORE))
+										{
+											cust = new ItemStack(Material.GOLD_INGOT);
+										}
+										
+										ParticleEffect.LAVA.display(0.2f, 4, b.getLocation(), 24);
+										new GSound(Sound.FIZZ, 0.4f, 1f).play(b.getLocation());
+									}
+								}
+								
+								catch(Exception e)
+								{
+									
+								}
+								
+								GList<ItemStack> drops = new GList<ItemStack>();
+								
+								if(cust != null)
+								{
+									NMSX.breakParticles(b.getLocation().add(0.5, 0.5, 0.5), b.getType(), 12);
+									new GSound(Sound.DIG_STONE, 1f, 1f).play(b.getLocation());
+									b.setType(Material.AIR);
+									drops.add(cust);
 								}
 								
 								else
 								{
-									b.getLocation().getWorld().dropItem(b.getLocation(), l);
+									NMSX.breakParticles(b.getLocation().add(0.5, 0.5, 0.5), b.getType(), 12);
+									new GSound(Sound.DIG_STONE, 1f, 1f).play(b.getLocation());
+									drops = new GList<ItemStack>(b.getDrops(e.getPlayer().getItemInHand()));
+									b.setType(Material.AIR);
+								}
+								
+								ItemStack boots = e.getPlayer().getInventory().getBoots();
+								
+								if(boots != null && EnchantmentAPI.itemHasEnchantment(boots, "Magnetic"))
+								{
+									for(ItemStack l : drops)
+									{
+										if(new PhantomInventory(e.getPlayer().getInventory()).hasSpace())
+										{
+											e.getPlayer().getInventory().addItem(l);
+										}
+										
+										else
+										{
+											b.getLocation().getWorld().dropItem(b.getLocation(), l);
+										}
+									}
+								}
+								
+								else
+								{
+									for(ItemStack l : drops)
+									{
+										b.getLocation().getWorld().dropItem(b.getLocation(), l);
+									}
 								}
 							}
 						}
-						
-						else
-						{
-							for(ItemStack l : drops)
-							{
-								b.getLocation().getWorld().dropItem(b.getLocation(), l);
-							}
-						}
-					}
+					};
 				}
 			};
 		}
