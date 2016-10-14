@@ -29,6 +29,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -1017,6 +1018,48 @@ public class EffexController extends ConfigurableController
 			{
 				e.getTNT().setFuseTicks(e.getTNT().getFuseTicks() / mapped.get(EnchantmentAPI.getEnchantment("Defusing")));
 			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void on(PlayerCommandPreprocessEvent e)
+	{
+		if(e.getMessage().equalsIgnoreCase("/split"))
+		{
+			ItemStack is = e.getPlayer().getItemInHand();
+			
+			if(is != null && (is.getType().equals(Material.ENCHANTED_BOOK) || is.getType().equals(Material.BOOK)))
+			{
+				Map<CustomEnchantment, Integer> map = EnchantmentAPI.getAllEnchantments(is);
+				
+				if(map.size() > 1)
+				{
+					e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
+					
+					for(CustomEnchantment i : map.keySet())
+					{
+						ItemStack isx = new ItemStack(Material.ENCHANTED_BOOK);
+						i.addToItem(isx, map.get(i));
+						
+						if(new PhantomInventory(e.getPlayer().getInventory()).hasSpace())
+						{
+							e.getPlayer().getInventory().addItem(isx);
+						}
+						
+						else
+						{
+							e.getPlayer().getWorld().dropItem(e.getPlayer().getLocation(), isx);
+						}
+					}
+					
+					e.getPlayer().sendMessage(C.GREEN + "Split book into " + map.size() + " sub-books.");
+					e.setCancelled(true);
+					return;
+				}
+			}
+			
+			e.setCancelled(true);
+			e.getPlayer().sendMessage(C.RED + "Must be a Book with multiple enchantments on it.");
 		}
 	}
 	
