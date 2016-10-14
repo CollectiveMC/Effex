@@ -1219,6 +1219,11 @@ public class EffexController extends ConfigurableController
 		
 		if(e.getPlayer().getInventory().getBoots() != null && EnchantmentAPI.itemHasEnchantment(e.getPlayer().getInventory().getBoots(), "Magnetic"))
 		{
+			if(!Blocks.canModify(e.getPlayer(), e.getBlock()))
+			{
+				return;
+			}
+			
 			if(!e.getPlayer().getGameMode().equals(GameMode.CREATIVE))
 			{
 				if(e.getBlock().getType().equals(Material.MOB_SPAWNER))
