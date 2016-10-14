@@ -15,7 +15,6 @@ import org.cyberpwn.effex.effect.VampiricEffect;
 import org.phantomapi.lang.GSound;
 import org.phantomapi.nms.NMSX;
 import org.phantomapi.physics.VectorMath;
-import org.phantomapi.sync.TaskLater;
 import org.phantomapi.util.C;
 import org.phantomapi.util.P;
 import org.phantomapi.vfx.ParticleEffect;
@@ -43,9 +42,9 @@ public class SoulEruptionEnchantment extends CustomEnchantment implements Ambien
 			return;
 		}
 		
-		if(Math.random() > 0.727 - (enchantLevel / 15))
+		if(Math.random() > 0.727 - enchantLevel / 15)
 		{
-			double modifier = (event.getDamage() / (enchantLevel > 2 ? 2 : 3)) / 2;
+			double modifier = event.getDamage() / (enchantLevel > 2 ? 2 : 3) / 2;
 			event.setDamage(event.getDamage() + modifier);
 			
 			Location a = P.getHand((Player) user);
@@ -60,14 +59,7 @@ public class SoulEruptionEnchantment extends CustomEnchantment implements Ambien
 			new GSound(Sound.SLIME_ATTACK, 2.0f, 0.2f).play(target.getLocation());
 			new GSound(Sound.SLIME_ATTACK, 2.0f, 0.5f).play(target.getLocation());
 			user.sendMessage(C.RED + "* You sacrifice health to increase damage.");
-			new TaskLater()
-			{
-				@Override
-				public void run()
-				{
-					user.damage(modifier);
-				}
-			};
+			user.damage(modifier);
 		}
 	}
 	
@@ -88,6 +80,7 @@ public class SoulEruptionEnchantment extends CustomEnchantment implements Ambien
 		return pow;
 	}
 	
+	@Override
 	public void setPow(double pow)
 	{
 		this.pow = pow;
