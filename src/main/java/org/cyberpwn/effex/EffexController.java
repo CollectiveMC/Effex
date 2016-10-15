@@ -635,6 +635,15 @@ public class EffexController extends ConfigurableController
 			if(k > 20 && i.getInventory().getHelmet() != null && EnchantmentAPI.itemHasEnchantment(i.getInventory().getHelmet(), "Nocturnal"))
 			{
 				k = 0;
+				
+				for(ItemStack j : i.getInventory().getArmorContents())
+				{
+					if(EnchantmentAPI.itemHasEnchantment(j, "Stamina"))
+					{
+						i.setSaturation(100f);
+					}
+				}
+				
 				i.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 500, 0), true);
 			}
 			
@@ -839,14 +848,6 @@ public class EffexController extends ConfigurableController
 	public void on(PlayerMoveBlockEvent e)
 	{
 		Player p = e.getPlayer();
-		
-		for(ItemStack i : p.getInventory().getArmorContents())
-		{
-			if(EnchantmentAPI.itemHasEnchantment(i, "Stamina"))
-			{
-				e.getPlayer().setSaturation(100f);
-			}
-		}
 		
 		for(ItemStack i : p.getInventory().getArmorContents())
 		{
