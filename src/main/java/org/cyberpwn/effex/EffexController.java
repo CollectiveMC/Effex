@@ -35,6 +35,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.cyberpwn.effex.effect.AmbientEffect;
@@ -634,8 +635,7 @@ public class EffexController extends ConfigurableController
 			if(k > 20 && i.getInventory().getHelmet() != null && EnchantmentAPI.itemHasEnchantment(i.getInventory().getHelmet(), "Nocturnal"))
 			{
 				k = 0;
-				i.removePotionEffect(PotionEffectType.NIGHT_VISION);
-				PE.NIGHT_VISION.a(1).d(400).c(i);
+				i.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 500, 0), true);
 			}
 			
 			if(i.getInventory().getBoots() != null && EnchantmentAPI.itemHasEnchantment(i.getInventory().getBoots(), "Spring"))
