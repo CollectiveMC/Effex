@@ -112,6 +112,7 @@ import org.phantomapi.inventory.PhantomInventory;
 import org.phantomapi.lang.GList;
 import org.phantomapi.lang.GMap;
 import org.phantomapi.lang.GSound;
+import org.phantomapi.multiblock.Multiblock;
 import org.phantomapi.nms.NMSX;
 import org.phantomapi.physics.VectorMath;
 import org.phantomapi.stack.Stack;
@@ -1495,6 +1496,14 @@ public class EffexController extends ConfigurableController
 								}
 								
 								Block b = breaks.pop();
+								
+								for(Multiblock i : Phantom.instance().getMultiblockRegistryController().getMultiblocks())
+								{
+									if(i.contains(b.getLocation()))
+									{
+										continue;
+									}
+								}
 								
 								if(!b.getType().toString().endsWith("STONE") && !b.getType().toString().endsWith("_ORE") && !b.getType().toString().startsWith("NETHER"))
 								{
