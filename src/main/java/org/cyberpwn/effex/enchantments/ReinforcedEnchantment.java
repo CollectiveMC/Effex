@@ -14,6 +14,7 @@ import com.rit.sucy.CustomEnchantment;
 public class ReinforcedEnchantment extends CustomEnchantment implements AmbientEffect, Enchanted
 {
 	private double pow = 0.46;
+	
 	public ReinforcedEnchantment()
 	{
 		super("Reinforced", Matte.concat(Matte.armor()));
@@ -27,12 +28,7 @@ public class ReinforcedEnchantment extends CustomEnchantment implements AmbientE
 	@Override
 	public void applyDefenseEffect(LivingEntity user, LivingEntity target, int enchantLevel, EntityDamageEvent event)
 	{
-		if(event.getDamage() == 0.0 || event.isCancelled())
-		{
-			return;
-		}
 		
-		event.setDamage(event.getDamage() - ((event.getDamage() / (enchantLevel) / 2)));
 	}
 	
 	@Override
@@ -47,11 +43,12 @@ public class ReinforcedEnchantment extends CustomEnchantment implements AmbientE
 		return pow;
 	}
 	
+	@Override
 	public void setPow(double pow)
 	{
 		this.pow = pow;
 	}
-
+	
 	@Override
 	public ETag[] getTags()
 	{

@@ -16,6 +16,7 @@ import com.rit.sucy.CustomEnchantment;
 public class RageEnchantment extends CustomEnchantment implements AmbientEffect, Enchanted
 {
 	private double pow = 0.53;
+	
 	public RageEnchantment()
 	{
 		super("Rage", Matte.concat(Matte.swords(), Matte.axes(), Matte.bow()));
@@ -29,12 +30,7 @@ public class RageEnchantment extends CustomEnchantment implements AmbientEffect,
 	@Override
 	public void applyEffect(LivingEntity user, LivingEntity target, int enchantLevel, EntityDamageByEntityEvent event)
 	{
-		if(event.getDamage() == 0.0 || event.isCancelled())
-		{
-			return;
-		}
 		
-		event.setDamage(event.getDamage() + ((event.getDamage() / (enchantLevel) / 2)));
 	}
 	
 	@Override
@@ -54,11 +50,12 @@ public class RageEnchantment extends CustomEnchantment implements AmbientEffect,
 		return pow;
 	}
 	
+	@Override
 	public void setPow(double pow)
 	{
 		this.pow = pow;
 	}
-
+	
 	@Override
 	public ETag[] getTags()
 	{

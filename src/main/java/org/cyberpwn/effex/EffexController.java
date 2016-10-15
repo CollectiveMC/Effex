@@ -647,6 +647,27 @@ public class EffexController extends ConfigurableController
 				i.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 500, 0), true);
 			}
 			
+			if(i.getItemInHand() != null && EnchantmentAPI.itemHasEnchantment(i.getItemInHand(), "Rage"))
+			{
+				i.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2, 0), true);
+			}
+			
+			for(ItemStack j : i.getInventory().getArmorContents())
+			{
+				if(EnchantmentAPI.itemHasEnchantment(j, "Reinforced"))
+				{
+					i.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2, 0), true);
+				}
+			}
+			
+			for(ItemStack j : i.getInventory().getArmorContents())
+			{
+				if(EnchantmentAPI.itemHasEnchantment(j, "Stamina"))
+				{
+					i.setSaturation(100f);
+				}
+			}
+			
 			if(i.getInventory().getBoots() != null && EnchantmentAPI.itemHasEnchantment(i.getInventory().getBoots(), "Spring"))
 			{
 				PE.JUMP.a(1).d(10).c(i);
