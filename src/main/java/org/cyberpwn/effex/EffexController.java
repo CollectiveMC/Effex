@@ -874,6 +874,44 @@ public class EffexController extends ConfigurableController
 	@EventHandler
 	public void on(PlayerDeathEvent e)
 	{
+		if(e.getEntity().getKiller() != null)
+		{
+			Player p = e.getEntity().getKiller();
+			ItemStack is = p.getItemInHand();
+			
+			if(EnchantmentAPI.itemHasEnchantment(is, "Soul Stealer"))
+			{
+				GList<String> lore = new GList<String>(is.getItemMeta().getLore());
+				GList<String> newLore = new GList<String>();
+				Boolean found = false;
+				
+				for(String i : lore)
+				{
+					if(C.stripColor(i).startsWith("Kills: "))
+					{
+						String current = C.stripColor(i).split(": ")[1];
+						String next = C.RED + "Kills: " + (Integer.valueOf(current) + 1);
+						newLore.add(next);
+						found = true;
+					}
+					
+					else
+					{
+						newLore.add(i);
+					}
+				}
+				
+				if(!found)
+				{
+					newLore.add(C.RED + "Kills: 1");
+				}
+				
+				ItemMeta im = is.getItemMeta();
+				im.setLore(newLore);
+				is.setItemMeta(im);
+			}
+		}
+		
 		if(M.r(0.8))
 		{
 			for(ItemStack i : new GList<ItemStack>(e.getDrops()))
