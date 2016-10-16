@@ -22,6 +22,7 @@ import com.rit.sucy.CustomEnchantment;
 public class ShockEnchantment extends CustomEnchantment implements AmbientEffect, Enchanted
 {
 	private double pow = 0.55;
+	
 	public ShockEnchantment()
 	{
 		super("Shock", Matte.concat(Matte.swords(), Matte.axes(), Matte.bow()));
@@ -40,22 +41,21 @@ public class ShockEnchantment extends CustomEnchantment implements AmbientEffect
 			return;
 		}
 		
-		if(Math.random() > 0.8 - (enchantLevel / 5))
+		if(Math.random() > 0.8 - enchantLevel / 5)
 		{
 			Location a = P.getHand((Player) user);
 			Vector dir = VectorMath.direction(a, target.getLocation());
 			Location b = target.getEyeLocation();
 			
-			new ShockEffect(3.6f * enchantLevel).play(a, dir, b);
+			new ShockEffect(2.6f * enchantLevel).play(a, dir, b);
 			Location s = target.getLocation().clone();
 			s.setY(0);
-			target.getWorld().strikeLightningEffect(s);
 			new GSound(Sound.AMBIENCE_THUNDER, 2.0f, 1.8f).play(target.getLocation());
 			new GSound(Sound.EXPLODE, 2.0f, 1.8f).play(target.getLocation());
 			target.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 10, 2));
 		}
 	}
-
+	
 	@Override
 	public void ambientPlay(Player p)
 	{
@@ -68,11 +68,12 @@ public class ShockEnchantment extends CustomEnchantment implements AmbientEffect
 		return pow;
 	}
 	
+	@Override
 	public void setPow(double pow)
 	{
 		this.pow = pow;
 	}
-
+	
 	@Override
 	public ETag[] getTags()
 	{
