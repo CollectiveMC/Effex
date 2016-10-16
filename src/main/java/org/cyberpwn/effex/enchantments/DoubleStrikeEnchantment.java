@@ -21,6 +21,7 @@ import com.rit.sucy.CustomEnchantment;
 public class DoubleStrikeEnchantment extends CustomEnchantment implements AmbientEffect, Enchanted
 {
 	private double pow = 0.27;
+	
 	public DoubleStrikeEnchantment()
 	{
 		super("Double Strike", Matte.concat(Matte.swords(), Matte.axes()));
@@ -39,10 +40,12 @@ public class DoubleStrikeEnchantment extends CustomEnchantment implements Ambien
 			return;
 		}
 		
-		if(Math.random() > 0.787 - (enchantLevel / 5))
+		if(Math.random() > 0.787 - enchantLevel / 5)
 		{
 			if(!target.getType().equals(EntityType.PLAYER))
 			{
+				event.setDamage(20);
+				
 				new TaskLater(1)
 				{
 					@Override
@@ -86,11 +89,12 @@ public class DoubleStrikeEnchantment extends CustomEnchantment implements Ambien
 		return pow;
 	}
 	
+	@Override
 	public void setPow(double pow)
 	{
 		this.pow = pow;
 	}
-
+	
 	@Override
 	public ETag[] getTags()
 	{
