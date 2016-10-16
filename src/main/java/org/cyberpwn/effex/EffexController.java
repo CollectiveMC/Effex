@@ -1089,6 +1089,13 @@ public class EffexController extends ConfigurableController
 		{
 			ItemStack is = e.getPlayer().getItemInHand();
 			
+			if(is.getAmount() > 1)
+			{
+				e.getPlayer().sendMessage(C.RED + "Please hold only ONE book to split.");
+				e.setCancelled(true);
+				return;
+			}
+			
 			if(is != null && (is.getType().equals(Material.ENCHANTED_BOOK) || is.getType().equals(Material.BOOK)))
 			{
 				Map<CustomEnchantment, Integer> map = EnchantmentAPI.getAllEnchantments(is);
@@ -1783,7 +1790,7 @@ public class EffexController extends ConfigurableController
 		
 		if(targ != null && drop != null)
 		{
-			if(drop.getType().equals(Material.BOOK) && (targ.getType().equals(Material.FISHING_ROD) || targ.getType().toString().contains("SWORD") || targ.getType().toString().contains("HOE") || targ.getType().toString().contains("SPADE") || targ.getType().toString().contains("AXE") || targ.getType().toString().contains("SHEAR") || targ.getType().toString().contains("BOOT") || targ.getType().toString().contains("LEGG") || targ.getType().toString().contains("CHESTPL") || targ.getType().toString().contains("HELMET") || targ.getType().toString().equals("TNT") || targ.getType().toString().equals("BOW")))
+			if(drop.getType().equals(Material.BOOK) && (targ.getType().equals(Material.FISHING_ROD) || targ.getType().toString().contains("SWORD") || targ.getType().toString().contains("HOE") || targ.getType().toString().contains("SPADE") || targ.getType().toString().contains("AXE") || targ.getType().toString().contains("SHEAR") || targ.getType().toString().contains("BOOT") || targ.getType().toString().contains("LEGG") || targ.getType().toString().contains("CHESTPL") || targ.getType().toString().contains("HELMET") || targ.getType().toString().equals("TNT") || targ.getType().equals(Material.BOW)))
 			{
 				for(CustomEnchantment i : new GList<CustomEnchantment>(EnchantmentAPI.getEnchantments(drop).keySet()))
 				{
