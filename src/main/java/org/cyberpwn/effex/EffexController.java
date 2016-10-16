@@ -650,14 +650,27 @@ public class EffexController extends ConfigurableController
 			
 			if(i.getItemInHand() != null && EnchantmentAPI.itemHasEnchantment(i.getItemInHand(), "Rage"))
 			{
-				i.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2, 0), true);
+				int level = EnchantmentAPI.getEnchantments(i.getItemInHand()).get(EnchantmentAPI.getEnchantment("Rage"));
+				i.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2, level - 1), true);
 			}
 			
 			for(ItemStack j : i.getInventory().getArmorContents())
 			{
+				int l = 0;
+				
 				if(EnchantmentAPI.itemHasEnchantment(j, "Reinforced"))
 				{
-					i.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2, 0), true);
+					int level = EnchantmentAPI.getEnchantments(j).get(EnchantmentAPI.getEnchantment("Rage"));
+					
+					if(level > l)
+					{
+						l = level;
+					}
+				}
+				
+				if(l > 0)
+				{
+					i.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2, l - 1), true);
 				}
 			}
 			
