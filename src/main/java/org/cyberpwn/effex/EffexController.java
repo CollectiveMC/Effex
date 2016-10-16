@@ -1737,7 +1737,7 @@ public class EffexController extends ConfigurableController
 		
 		if(targ != null && drop != null)
 		{
-			if(drop.getType().equals(Material.ENCHANTED_BOOK) && (targ.getType().equals(Material.FISHING_ROD) || targ.getType().toString().contains("SWORD") || targ.getType().toString().contains("HOE") || targ.getType().toString().contains("SPADE") || targ.getType().toString().contains("AXE") || targ.getType().toString().contains("SHEAR") || targ.getType().toString().contains("BOOT") || targ.getType().toString().contains("LEGG") || targ.getType().toString().contains("CHESTPL") || targ.getType().toString().contains("HELMET") || targ.getType().toString().equals("TNT")))
+			if(drop.getType().equals(Material.ENCHANTED_BOOK) && (targ.getType().equals(Material.FISHING_ROD) || targ.getType().toString().contains("SWORD") || targ.getType().toString().contains("HOE") || targ.getType().toString().contains("SPADE") || targ.getType().toString().contains("AXE") || targ.getType().toString().contains("SHEAR") || targ.getType().toString().contains("BOOT") || targ.getType().toString().contains("LEGG") || targ.getType().toString().contains("CHESTPL") || targ.getType().toString().contains("HELMET") || targ.getType().toString().equals("TNT") || targ.getType().equals(Material.BOW)))
 			{
 				EnchantmentStorageMeta meta = (EnchantmentStorageMeta) drop.getItemMeta();
 				
