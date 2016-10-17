@@ -3,7 +3,7 @@ package org.cyberpwn.effex;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -82,7 +82,6 @@ import org.cyberpwn.effex.enchantments.StaminaEnchantment;
 import org.cyberpwn.effex.enchantments.StickyEnchantment;
 import org.cyberpwn.effex.enchantments.VampiricEnchantment;
 import org.phantomapi.Phantom;
-import org.phantomapi.clust.Comment;
 import org.phantomapi.clust.ConfigurableController;
 import org.phantomapi.clust.Keyed;
 import org.phantomapi.command.Command;
@@ -123,7 +122,6 @@ import org.phantomapi.util.C;
 import org.phantomapi.util.F;
 import org.phantomapi.util.M;
 import org.phantomapi.util.P;
-import org.phantomapi.util.Range;
 import org.phantomapi.vfx.LineParticleManipulator;
 import org.phantomapi.vfx.ParticleEffect;
 import org.phantomapi.world.Area;
@@ -131,7 +129,6 @@ import org.phantomapi.world.Blocks;
 import org.phantomapi.world.MaterialBlock;
 import org.phantomapi.world.PE;
 import org.phantomapi.world.W;
-import com.earth2me.essentials.craftbukkit.SetExpFix;
 import com.rit.sucy.CustomEnchantment;
 import com.rit.sucy.EnchantmentAPI;
 import net.md_5.bungee.api.ChatColor;
@@ -146,16 +143,9 @@ public class EffexController extends ConfigurableController
 	public static EffexController inst;
 	private NPCController npcController;
 	
-	@Comment("The Cost multipler for the intensity. Remember the intensity is judged by\nBASE X LEVEL.\nThe cost is INTENSITY X MULTIPLIER")
-	@Keyed("math.cost-multiplier")
-	public double costMultiple = 1846;
-	
 	@Keyed("math.tiers")
 	public GList<String> tiers = new GList<String>().qadd("apprentice").qadd("novice").qadd("scholar").qadd("expert").qadd("master");
 	
-	private GMap<String, GList<Enchant>> tierSet;
-	private GMap<String, Range> ranged;
-	private GMap<String, Double> cost;
 	private GMap<Entity, Integer> ebs;
 	private int k;
 	
@@ -168,9 +158,6 @@ public class EffexController extends ConfigurableController
 		affected = new GMap<Player, Float>();
 		enchantments = new GList<CustomEnchantment>();
 		npcController = new NPCController(this);
-		tierSet = new GMap<String, GList<Enchant>>();
-		ranged = new GMap<String, Range>();
-		cost = new GMap<String, Double>();
 		ebs = new GMap<Entity, Integer>();
 		k = 0;
 		
@@ -226,72 +213,31 @@ public class EffexController extends ConfigurableController
 		for(CustomEnchantment i : enchantments)
 		{
 			EnchantmentAPI.registerCustomEnchantment(i);
-			getConfiguration().set("enchantment." + i.getClass().getSimpleName().toLowerCase().replaceAll("enchantment", ""), ((Enchanted) i).getIntensity(1));
-		}
-		
-		loadCluster(this);
-		saveCluster(this);
-		
-		for(CustomEnchantment i : enchantments)
-		{
-			Enchanted e = (Enchanted) i;
-			e.setPow(getConfiguration().getDouble("enchantment." + i.getClass().getSimpleName().toLowerCase().replaceAll("enchantment", "")));
-		}
-		
-		buildTiers();
-	}
-	
-	public void buildTiers()
-	{
-		GMap<String, GList<Enchant>> cloned = new GMap<String, GList<Enchant>>();
-		GMap<Enchant, Double> mapping = new GMap<Enchant, Double>();
-		double ran = 0;
-		double max = 0;
-		double seg = 0;
-		
-		for(CustomEnchantment i : enchantments)
-		{
-			Enchanted e = (Enchanted) i;
-			double power = e.getIntensity(1);
 			
 			for(int j = 0; j < i.getMaxLevel(); j++)
 			{
 				int level = j + 1;
-				Enchant ex = new Enchant(e, level);
-				mapping.put(ex, power * level);
-				
-				if(power * level > max)
-				{
-					max = power * level;
-				}
+				getConfiguration().set("enchantment." + i.getClass().getSimpleName().toLowerCase().replaceAll("enchantment", "") + ".level-" + level, "expert");
 			}
 		}
-		
-		seg = max / tiers.size();
 		
 		for(String i : tiers)
 		{
-			Range r = new Range(ran, ran + seg);
-			cloned.put(i, new GList<Enchant>());
-			ranged.put(i, r);
-			double cost = 0;
-			int itr = 0;
-			
-			for(Enchant j : mapping.k())
-			{
-				if(r.isWithin(mapping.get(j)))
-				{
-					cloned.get(i).add(j);
-					cost += j.getLevel() * j.getE().getIntensity(1);
-					itr++;
-				}
-			}
-			
-			this.cost.put(i, cost / itr);
-			ran += seg;
+			getConfiguration().set("tier.cost." + i, 1024);
 		}
 		
-		tierSet = cloned;
+		loadCluster(this);
+		saveCluster(this);
+	}
+	
+	public int getCost(String tier)
+	{
+		return getConfiguration().getInt("tier.cost." + tier);
+	}
+	
+	public String getTier(Enchant e)
+	{
+		return getConfiguration().getString("enchantment." + e.getE().getClass().getSimpleName().toLowerCase().replaceAll("enchantment", "") + ".level-" + e.getLevel());
 	}
 	
 	@Command("enchantments")
@@ -300,260 +246,153 @@ public class EffexController extends ConfigurableController
 	{
 		if(sender.isPlayer())
 		{
-			Window w = new PhantomWindow(C.LIGHT_PURPLE + "Enchantments", sender.getPlayer());
-			GList<Slot> s = Guis.sortLTR(Guis.getCentered(tiers.size(), 2));
 			
-			for(String i : tiers)
-			{
-				Element e = new PhantomElement(new ItemStack(Material.ENCHANTED_BOOK), s.pop())
-				{
-					@Override
-					public void onClick(Player p, Click c, Window w)
-					{
-						openRevealWindow(p, i);
-					}
-				};
-				
-				int cost = (int) (costMultiple * this.cost.get(i));
-				e.setTitle(C.LIGHT_PURPLE + StringUtils.capitalize(i.toLowerCase()) + " Enchantments");
-				e.addText(C.DARK_PURPLE + "Left Click to Randomly Purchase one");
-				e.addText(C.DARK_PURPLE + "Right Click to see all possibilities");
-				e.addText(C.GREEN + "Costs " + F.f(cost) + " XP");
-				w.addElement(e);
-			}
-			
-			w.setViewport(3);
-			w.setBackground(new PhantomElement(new ItemStack(Material.STAINED_GLASS_PANE), new Slot(0)).setMetadata((byte) 15));
-			w.open();
 		}
-	}
-	
-	public void openEnchantWindow(Player p)
-	{
-		Window w = new PhantomWindow(C.LIGHT_PURPLE + " Enchantments", p);
-		w.setViewport(3);
-		int ind = -2;
-		
-		for(ETag i : ETag.values())
-		{
-			ETag tag = i;
-			String n = StringUtils.capitalize(i.toString().toLowerCase().replaceAll("_", " "));
-			
-			Element e = new PhantomElement(new ItemStack(Material.ENCHANTED_BOOK), new Slot(ind, 2))
-			{
-				@Override
-				public void onClick(Player p, Click c, Window w)
-				{
-					Window wx = new PhantomWindow(C.DARK_PURPLE + n + " Enchantments", p);
-					int ix = 0;
-					
-					for(Enchanted i : EffexController.inst.getEnchantments())
-					{
-						if(new GList<ETag>(i.getTags()).contains(tag))
-						{
-							CustomEnchantment en = (CustomEnchantment) i;
-							String name = i.getClass().getSimpleName().replaceAll("Enchantment", "");
-							Element ex = new PhantomElement(new ItemStack(Material.ENCHANTED_BOOK), new Slot(ix))
-							{
-								@Override
-								public void onClick(Player p, Click c, Window w)
-								{
-									Window wz = new PhantomWindow(C.DARK_PURPLE + name, p);
-									int ixz = 0;
-									
-									for(int i = 0; i < en.getMaxLevel(); i++)
-									{
-										int level = i + 1;
-										
-										Element ez = new PhantomElement(new ItemStack(Material.ENCHANTED_BOOK), new Slot(ixz))
-										{
-											@Override
-											public void onClick(Player p, Click c, Window w)
-											{
-												int cost = (int) EffexController.inst.getCost((Enchanted) en, level);
-												
-												if(SetExpFix.getTotalExperience(p) >= cost)
-												{
-													if(new PhantomInventory(p.getInventory()).hasSpace())
-													{
-														ItemStack is = new ItemStack(Material.ENCHANTED_BOOK);
-														en.addToItem(is, level);
-														ItemMeta im = is.getItemMeta();
-														im.setDisplayName(C.LIGHT_PURPLE + name + " " + M.toRoman(level));
-														p.getInventory().addItem(is);
-														SetExpFix.setTotalExperience(p, SetExpFix.getTotalExperience(p) - cost);
-													}
-													
-													else
-													{
-														p.sendMessage(C.RED + "No Space!");
-													}
-												}
-												
-												else
-												{
-													p.sendMessage(C.RED + "You only have " + F.f(SetExpFix.getTotalExperience(p)) + " XP");
-												}
-											}
-										};
-										
-										ez.setTitle(C.LIGHT_PURPLE + name + " " + M.toRoman(level));
-										ez.addText(C.LIGHT_PURPLE + "Click to aquire for " + C.GREEN + F.f((int) EffexController.inst.getCost((Enchanted) en, level)) + " XP");
-										ez.addText(C.RED + F.pc(((Enchanted) en).getIntensity(level) * level) + " More Intense");
-										wz.addElement(ez);
-										ixz++;
-									}
-									
-									wz.setBackground(new PhantomElement(new ItemStack(Material.STAINED_GLASS_PANE), new Slot(0)).setMetadata((byte) 15));
-									wz.open();
-								}
-							};
-							
-							ex.setTitle(C.LIGHT_PURPLE + name);
-							ex.addText(C.DARK_PURPLE + en.getDescription());
-							wx.addElement(ex);
-							ix++;
-						}
-					}
-					
-					wx.setBackground(new PhantomElement(new ItemStack(Material.STAINED_GLASS_PANE), new Slot(0)).setMetadata((byte) 15));
-					wx.open();
-				}
-			};
-			
-			e.setTitle(C.LIGHT_PURPLE + n + " Enchantments");
-			e.addText(C.DARK_PURPLE + "Click to buy " + n + " Enchantments.");
-			w.addElement(e);
-			ind++;
-		}
-		
-		w.setBackground(new PhantomElement(new ItemStack(Material.STAINED_GLASS_PANE), new Slot(0)).setMetadata((byte) 15));
-		w.open();
 	}
 	
 	public void openWindow(Player p)
 	{
 		Window w = new PhantomWindow(C.LIGHT_PURPLE + "Enchantments", p);
-		GList<Slot> s = Guis.sortLTR(Guis.getCentered(tiers.size(), 2));
+		GList<Slot> slots = Guis.sortLTR(Guis.getCentered(tiers.size(), 2));
 		
 		for(String i : tiers)
 		{
-			Element e = new PhantomElement(new ItemStack(Material.ENCHANTED_BOOK), s.pop())
+			String name = C.LIGHT_PURPLE + StringUtils.capitalize(i) + " Enchantments";
+			Element e = new PhantomElement(Material.ENCHANTED_BOOK, slots.pop(), name)
 			{
 				@Override
 				public void onClick(Player p, Click c, Window w)
 				{
-					if(c.equals(Click.LEFT))
-					{
-						openTierWindow(p, i);
-					}
+					w.close();
 					
-					else if(c.equals(Click.SHIFT_RIGHT))
+					if(c.equals(Click.RIGHT))
 					{
-						openSuperRevealWindow(p, i);
+						GList<Enchant> exv = new GList<Enchant>();
+						
+						for(CustomEnchantment k : enchantments)
+						{
+							for(int j = 0; j < k.getMaxLevel(); j++)
+							{
+								int level = j + 1;
+								Enchant en = new Enchant((Enchanted) k, level);
+								
+								if(getTier(en).equals(i))
+								{
+									exv.add(en);
+								}
+							}
+						}
+						
+						if(exv.isEmpty())
+						{
+							p.sendMessage(C.RED + "No Enchantments for this Tier");
+							
+							return;
+						}
+						
+						else
+						{
+							Window wx = new PhantomWindow(C.LIGHT_PURPLE + name, p);
+							
+							int ix = 0;
+							
+							GMap<Enchanted, GList<Integer>> mapper = new GMap<Enchanted, GList<Integer>>();
+							
+							for(Enchant i : exv)
+							{
+								if(!mapper.containsKey(i.getE()))
+								{
+									mapper.put(i.getE(), new GList<Integer>());
+								}
+								
+								mapper.get(i.getE()).add(i.getLevel());
+							}
+							
+							for(Enchanted i : mapper.k())
+							{
+								Slot s = new Slot(ix);
+								ix++;
+								
+								Element ee = new PhantomElement(Material.ENCHANTED_BOOK, s, C.LIGHT_PURPLE + i.getClass().getSimpleName().replaceAll("Enchantment", ""));
+								
+								for(int j : mapper.get(i))
+								{
+									ee.addText(C.GRAY + "Level " + M.toRoman(j));
+								}
+								
+								wx.addElement(ee);
+							}
+							
+							wx.setBackground(new PhantomElement(Material.STAINED_GLASS_PANE, (byte) 15, new Slot(0), " "));
+							wx.open();
+						}
 					}
 					
 					else
 					{
-						openRevealWindow(p, i);
+						GList<Enchant> exv = new GList<Enchant>();
+						
+						for(CustomEnchantment k : enchantments)
+						{
+							for(int j = 0; j < k.getMaxLevel(); j++)
+							{
+								int level = j + 1;
+								Enchant en = new Enchant((Enchanted) k, level);
+								
+								if(getTier(en).equals(i))
+								{
+									exv.add(en);
+								}
+							}
+						}
+						
+						if(exv.isEmpty())
+						{
+							p.sendMessage(C.RED + "No Enchantments for this Tier");
+							
+							return;
+						}
+						
+						Enchant ex = exv.pickRandom();
+						PhantomInventory pi = new PhantomInventory(p.getInventory());
+						
+						int has = (int) new ExperienceCurrency().get(p);
+						
+						if(has >= getCost(i))
+						{
+							if(pi.hasSpace())
+							{
+								ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+								ItemMeta im = book.getItemMeta();
+								im.setDisplayName(C.LIGHT_PURPLE + ex.getE().getClass().getSimpleName().replaceAll("Enchantment", "") + " " + M.toRoman(ex.getLevel()));
+								book.setItemMeta(im);
+								((CustomEnchantment) ex.getE()).addToItem(book, ex.getLevel());
+								pi.addItem(book);
+								new Transaction(new ExperienceCurrency()).from(p).amount((double) getCost(i)).commit();
+							}
+							
+							else
+							{
+								p.sendMessage(C.RED + "No inventory space!");
+							}
+						}
+						
+						else
+						{
+							p.sendMessage(C.RED + "Not enough XP!");
+						}
 					}
 				}
 			};
 			
-			int cost = (int) (costMultiple * this.cost.get(i));
-			e.setTitle(C.LIGHT_PURPLE + StringUtils.capitalize(i.toLowerCase()) + " Enchantments");
-			e.addText(C.DARK_PURPLE + "Left Click to Randomly Purchase one");
-			e.addText(C.DARK_PURPLE + "Right Click to see all possibilities");
-			e.addText(C.GREEN + "Costs " + F.f(cost) + " XP");
+			e.addText(C.DARK_PURPLE + "Click to select from " + name);
+			e.addText(C.GREEN + "Costs " + F.f(getCost(i)) + " XP");
 			w.addElement(e);
 		}
 		
+		w.setBackground(new PhantomElement(Material.STAINED_GLASS_PANE, (byte) 15, new Slot(0), " "));
 		w.setViewport(3);
-		w.setBackground(new PhantomElement(new ItemStack(Material.STAINED_GLASS_PANE), new Slot(0)).setMetadata((byte) 15));
 		w.open();
-	}
-	
-	public void openTierWindow(Player p, String tier)
-	{
-		int cost = (int) (costMultiple * this.cost.get(tier));
-		
-		if(SetExpFix.getTotalExperience(p) >= cost)
-		{
-			SetExpFix.setTotalExperience(p, SetExpFix.getTotalExperience(p) - cost);
-			Enchant e = tierSet.get(tier).copy().pickRandom();
-			CustomEnchantment en = (CustomEnchantment) e.getE();
-			ItemStack is = new ItemStack(Material.ENCHANTED_BOOK);
-			en.addToItem(is, e.getLevel());
-			ItemMeta im = is.getItemMeta();
-			
-			Double pc = (double) (e.getLevel() / en.getMaxLevel());
-			GList<C> cx = new GList<C>().qadd(C.GREEN).qadd(C.AQUA).qadd(C.YELLOW).qadd(C.DARK_PURPLE).qadd(C.LIGHT_PURPLE);
-			C v = C.RED;
-			
-			if(pc > 1.0 || pc < 0)
-			{
-				
-			}
-			
-			else
-			{
-				v = cx.get((int) (pc * (cx.size() - 1)));
-			}
-			
-			im.setDisplayName(v + C.stripColor(name) + " " + M.toRoman(e.getLevel()));
-			p.getInventory().addItem(is);
-		}
-		
-		else
-		{
-			p.sendMessage(C.RED + "You only have " + F.f(SetExpFix.getTotalExperience(p)) + " XP");
-		}
-	}
-	
-	public void openRevealWindow(Player p, String tier)
-	{
-		Window w = new PhantomWindow(C.LIGHT_PURPLE + StringUtils.capitalize(tier) + " Possibilities", p);
-		int ix = 0;
-		
-		for(Enchant i : tierSet.get(tier))
-		{
-			Element e = new PhantomElement(new ItemStack(Material.ENCHANTED_BOOK), new Slot(ix));
-			e.setTitle(C.LIGHT_PURPLE + i.getE().getClass().getSimpleName().replaceAll("Enchantment", "") + " " + M.toRoman(i.getLevel()));
-			e.addText(C.DARK_PURPLE + ((CustomEnchantment) i.getE()).getDescription());
-			e.addText(C.RED + "Chance: " + F.pc(1.0 / tierSet.get(tier).size()));
-			w.addElement(e);
-			ix++;
-		}
-		
-		w.setBackground(new PhantomElement(new ItemStack(Material.STAINED_GLASS_PANE), new Slot(0)).setMetadata((byte) 15));
-		w.open();
-	}
-	
-	public void openSuperRevealWindow(Player p, String tier)
-	{
-		Window w = new PhantomWindow(C.LIGHT_PURPLE + StringUtils.capitalize(tier) + " Possibilities" + C.YELLOW + " " + ranged.get(tier).getMin() + " - " + ranged.get(tier).getMax(), p);
-		int ix = 0;
-		
-		for(Enchant i : tierSet.get(tier))
-		{
-			Element e = new PhantomElement(new ItemStack(Material.ENCHANTED_BOOK), new Slot(ix));
-			e.setTitle(C.LIGHT_PURPLE + i.getE().getClass().getSimpleName().replaceAll("Enchantment", "") + " " + M.toRoman(i.getLevel()));
-			e.addText(C.DARK_PURPLE + ((CustomEnchantment) i.getE()).getDescription());
-			e.addText(C.RED + "Chance: " + F.pc(1.0 / tierSet.get(tier).size()));
-			e.addText(C.YELLOW + "Member: " + i.getClass().getSimpleName());
-			e.addText(C.YELLOW + "Intensity: " + i.getE().getIntensity(1) * i.getLevel());
-			e.addText(C.YELLOW + "Max: " + ((CustomEnchantment) i.getE()).getMaxLevel());
-			w.addElement(e);
-			ix++;
-		}
-		
-		w.setBackground(new PhantomElement(new ItemStack(Material.STAINED_GLASS_PANE), new Slot(0)).setMetadata((byte) 15));
-		w.open();
-	}
-	
-	public double getCost(Enchanted e, int level)
-	{
-		return costMultiple * (e.getIntensity(1) * level);
 	}
 	
 	public GList<Enchanted> getEnchantments()
@@ -571,11 +410,7 @@ public class EffexController extends ConfigurableController
 	@Override
 	public void onReadConfig()
 	{
-		for(CustomEnchantment i : enchantments)
-		{
-			Enchanted e = (Enchanted) i;
-			e.setPow(getConfiguration().getDouble("enchantment." + i.getClass().getSimpleName().toLowerCase().replaceAll("enchantment", "")));
-		}
+		
 	}
 	
 	@Override
