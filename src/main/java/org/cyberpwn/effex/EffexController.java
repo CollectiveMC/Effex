@@ -612,6 +612,11 @@ public class EffexController extends ConfigurableController
 						if(M.r(level / 15.0))
 						{
 							j.setDurability((short) (j.getDurability() - level < 0 ? 0 : j.getDurability() - level));
+							
+							if(j.getDurability() < 0 || j.getDurability() > j.getType().getMaxDurability())
+							{
+								j.setType(Material.AIR);
+							}
 						}
 					}
 				}
@@ -1442,6 +1447,11 @@ public class EffexController extends ConfigurableController
 				ParticleEffect.LAVA.display(0.2f, 4, e.getBlock().getLocation(), 24);
 				new GSound(Sound.FIZZ, 0.4f, 1f).play(e.getPlayer().getLocation());
 				e.getPlayer().getItemInHand().setDurability((short) (e.getPlayer().getItemInHand().getDurability() + 3));
+				
+				if(e.getPlayer().getItemInHand().getDurability() < 0 || e.getPlayer().getItemInHand().getDurability() > e.getPlayer().getItemInHand().getType().getMaxDurability())
+				{
+					e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
+				}
 			}
 		}
 		
@@ -1498,6 +1508,11 @@ public class EffexController extends ConfigurableController
 				public void run()
 				{
 					e.getPlayer().getItemInHand().setDurability((short) (e.getPlayer().getItemInHand().getDurability() + breaks.size()));
+					
+					if(e.getPlayer().getItemInHand().getDurability() < 0 || e.getPlayer().getItemInHand().getDurability() > e.getPlayer().getItemInHand().getType().getMaxDurability())
+					{
+						e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
+					}
 					
 					if(e.isCancelled())
 					{
