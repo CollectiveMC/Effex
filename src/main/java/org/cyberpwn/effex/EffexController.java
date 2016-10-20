@@ -120,6 +120,7 @@ import org.phantomapi.sync.Task;
 import org.phantomapi.sync.TaskLater;
 import org.phantomapi.util.C;
 import org.phantomapi.util.F;
+import org.phantomapi.util.FinalInteger;
 import org.phantomapi.util.M;
 import org.phantomapi.util.P;
 import org.phantomapi.vfx.LineParticleManipulator;
@@ -1334,6 +1335,7 @@ public class EffexController extends ConfigurableController
 				breaks.shuffle();
 			}
 			
+			FinalInteger bxx = new FinalInteger(0);
 			breaks.removeDuplicates();
 			breaks.pickRandom();
 			
@@ -1342,8 +1344,6 @@ public class EffexController extends ConfigurableController
 				@Override
 				public void run()
 				{
-					e.getPlayer().getItemInHand().setDurability((short) (e.getPlayer().getItemInHand().getDurability() + breaks.size()));
-					
 					if(e.getPlayer().getItemInHand().getDurability() < 0 || e.getPlayer().getItemInHand().getDurability() > e.getPlayer().getItemInHand().getType().getMaxDurability())
 					{
 						e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
@@ -1370,6 +1370,7 @@ public class EffexController extends ConfigurableController
 								if(breaks.isEmpty())
 								{
 									cancel();
+									e.getPlayer().getItemInHand().setDurability((short) (e.getPlayer().getItemInHand().getDurability() + bxx.get()));
 									return;
 								}
 								
@@ -1472,6 +1473,8 @@ public class EffexController extends ConfigurableController
 										b.getLocation().getWorld().dropItem(b.getLocation(), l);
 									}
 								}
+								
+								bxx.add(1);
 							}
 						}
 					};
