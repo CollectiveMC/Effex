@@ -1611,12 +1611,18 @@ public class EffexController extends ConfigurableController
 		
 		if(targ != null && drop != null)
 		{
+			for(CustomEnchantment i : new GList<CustomEnchantment>(EnchantmentAPI.getEnchantments(drop).keySet()))
+			{
+				System.out.println(i.getClass().getSimpleName());
+			}
+			
 			if(drop.getType().equals(Material.ENCHANTED_BOOK) && (targ.getType().equals(Material.FISHING_ROD) || targ.getType().toString().contains("SWORD") || targ.getType().toString().contains("HOE") || targ.getType().toString().contains("SPADE") || targ.getType().toString().contains("AXE") || targ.getType().toString().contains("SHEAR") || targ.getType().toString().contains("BOOT") || targ.getType().toString().contains("LEGG") || targ.getType().toString().contains("CHESTPL") || targ.getType().toString().contains("HELMET") || targ.getType().toString().equals("TNT") || targ.getType().equals(Material.BOW)))
 			{
 				EnchantmentStorageMeta meta = (EnchantmentStorageMeta) drop.getItemMeta();
 				
 				for(CustomEnchantment i : new GList<CustomEnchantment>(EnchantmentAPI.getEnchantments(drop).keySet()))
 				{
+					s(i.getClass().getSimpleName());
 					if(i.canEnchantOnto(targ))
 					{
 						i.removeFromItem(targ);
@@ -1635,7 +1641,7 @@ public class EffexController extends ConfigurableController
 				{
 					try
 					{
-						if(!i.getItemTarget().includes(targ.getType()))
+						if(!i.getItemTarget().includes(targ.getType()) && !(i.equals(Enchantment.DAMAGE_ALL) && targ.getType().toString().endsWith("_AXE")))
 						{
 							e.getWhoClicked().sendMessage(F.color("&8&l(&c&l!&8&l) &cInvalid &e&l" + i.getName().substring(0, 1) + i.getName().toLowerCase().replaceAll("_", " ").substring(1) + "&c -> &e&l" + targ.getType().toString().substring(0, 1) + targ.getType().toString().toLowerCase().replaceAll("_", " ").substring(1)));
 							return;
@@ -1668,6 +1674,8 @@ public class EffexController extends ConfigurableController
 			{
 				for(CustomEnchantment i : new GList<CustomEnchantment>(EnchantmentAPI.getEnchantments(drop).keySet()))
 				{
+					s(i.getClass().getSimpleName());
+					
 					if(i.canEnchantOnto(targ))
 					{
 						i.removeFromItem(targ);
