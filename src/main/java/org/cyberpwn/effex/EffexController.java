@@ -1349,22 +1349,11 @@ public class EffexController extends ConfigurableController
 						e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
 					}
 					
-					if(e.isCancelled())
-					{
-						return;
-					}
-					
 					new Task(6 - level)
 					{
 						@Override
 						public void run()
 						{
-							if(e.isCancelled())
-							{
-								cancel();
-								return;
-							}
-							
 							for(int k = 0; k < 5; k++)
 							{
 								if(breaks.isEmpty())
