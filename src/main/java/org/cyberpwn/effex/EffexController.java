@@ -1463,6 +1463,26 @@ public class EffexController extends ConfigurableController
 									}
 								}
 								
+								if(e.getPlayer().getItemInHand() != null && EnchantmentAPI.itemHasEnchantment(e.getPlayer().getItemInHand(), "Essence"))
+								{
+									if(e.getExpToDrop() > 0)
+									{
+										new TaskLater()
+										{
+											@Override
+											public void run()
+											{
+												int enchantLevel = EnchantmentAPI.getEnchantments(e.getPlayer().getItemInHand()).get(EnchantmentAPI.getEnchantment("Essence"));
+												
+												for(int i = 0; i < enchantLevel; i++)
+												{
+													new Transaction(new ExperienceCurrency()).to(e.getPlayer()).amount(1 + 18 * Math.random()).noDiff().commit();
+												}
+											}
+										};
+									}
+								}
+								
 								bxx.add(1);
 							}
 						}
