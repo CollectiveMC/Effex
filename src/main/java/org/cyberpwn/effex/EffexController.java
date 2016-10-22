@@ -264,8 +264,6 @@ public class EffexController extends ConfigurableController
 				@Override
 				public void onClick(Player p, Click c, Window w)
 				{
-					w.close();
-					
 					if(c.equals(Click.RIGHT))
 					{
 						GList<Enchant> exv = new GList<Enchant>();
