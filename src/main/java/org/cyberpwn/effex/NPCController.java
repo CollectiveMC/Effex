@@ -30,7 +30,7 @@ public class NPCController extends ConfigurableController
 	{
 		super(parentController, "npc-spawns");
 		
-		enchanter = new PhantomWraith(C.LIGHT_PURPLE + "Enchanter");
+		enchanter = new PhantomWraith(C.LIGHT_PURPLE + "Enchanter", this);
 	}
 	
 	@Override
