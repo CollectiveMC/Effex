@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cyberpwn</groupId>
 	<artifactId>effex</artifactId>
-	<version>3.8</version>
+	<version>3.9</version>
 	<name>Effex</name>
 	<description>Cool Effex for enchantments and potions</description>
 	<properties>
@@ -112,7 +112,7 @@
 		<dependency>
 			<groupId>org.cyberpwn</groupId>
 			<artifactId>phantom</artifactId>
-			<version>E</version>
+			<version>E2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
