@@ -1508,6 +1508,11 @@ public class EffexController extends ConfigurableController
 				
 				if(is != null && EnchantmentAPI.itemHasEnchantment(is, "Butcher"))
 				{
+					if(e.getEntity().getType().equals(EntityType.HORSE))
+					{
+						return;
+					}
+					
 					int level = EnchantmentAPI.getEnchantments(is).get(EnchantmentAPI.getEnchantment("Butcher"));
 					
 					if(M.r(0.2 * level))
