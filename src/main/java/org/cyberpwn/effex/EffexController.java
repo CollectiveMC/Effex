@@ -74,7 +74,6 @@ import org.cyberpwn.effex.enchantments.RageEnchantment;
 import org.cyberpwn.effex.enchantments.ReinforcedEnchantment;
 import org.cyberpwn.effex.enchantments.ShockEnchantment;
 import org.cyberpwn.effex.enchantments.SnareEnchantment;
-import org.cyberpwn.effex.enchantments.SoulEruptionEnchantment;
 import org.cyberpwn.effex.enchantments.SoulStealerEnchantment;
 import org.cyberpwn.effex.enchantments.SoullessEnchantment;
 import org.cyberpwn.effex.enchantments.SpringEnchantment;
@@ -184,7 +183,6 @@ public class EffexController extends ConfigurableController
 		enchantments.add(new BeheadingEnchantment());
 		enchantments.add(new ReinforcedEnchantment());
 		enchantments.add(new LongShotEnchantment());
-		enchantments.add(new SoulEruptionEnchantment());
 		enchantments.add(new SoulStealerEnchantment());
 		enchantments.add(new EmpowermentEnchantment());
 		enchantments.add(new BlessingEnchantment());
