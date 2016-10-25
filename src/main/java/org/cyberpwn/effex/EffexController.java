@@ -1111,7 +1111,7 @@ public class EffexController extends ConfigurableController
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void on(BlockBreakEvent e)
 	{
 		if(!Blocks.canModify(e.getPlayer(), e.getBlock()))
@@ -1168,6 +1168,11 @@ public class EffexController extends ConfigurableController
 					{
 						for(ItemStack i : is)
 						{
+							if(i.getType().equals(Material.HOPPER))
+							{
+								continue;
+							}
+							
 							if(e.getPlayer().getItemInHand() != null && EnchantmentAPI.itemHasEnchantment(e.getPlayer().getItemInHand(), "Forge"))
 							{
 								boolean part = false;
