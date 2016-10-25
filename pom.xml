@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cyberpwn</groupId>
 	<artifactId>effex</artifactId>
-	<version>3.9</version>
+	<version>4</version>
 	<name>Effex</name>
 	<description>Cool Effex for enchantments and potions</description>
 	<properties>
