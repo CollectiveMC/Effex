@@ -1619,6 +1619,14 @@ public class EffexController extends ConfigurableController
 		}
 	}
 	
+	public void sendDrop(int level, Player p)
+	{
+		ControllerMessage cm = new ControllerMessage(this);
+		cm.set("e.player", p.getName());
+		cm.set("e.level", level);
+		sendMessage("SkillEnchanting", cm);
+	}
+	
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void on(InventoryClickEvent e)
@@ -1628,22 +1636,17 @@ public class EffexController extends ConfigurableController
 		
 		if(targ != null && drop != null)
 		{
-			for(CustomEnchantment i : new GList<CustomEnchantment>(EnchantmentAPI.getEnchantments(drop).keySet()))
-			{
-				System.out.println(i.getClass().getSimpleName());
-			}
-			
 			if(drop.getType().equals(Material.ENCHANTED_BOOK) && (targ.getType().equals(Material.FISHING_ROD) || targ.getType().toString().contains("SWORD") || targ.getType().toString().contains("HOE") || targ.getType().toString().contains("SPADE") || targ.getType().toString().contains("AXE") || targ.getType().toString().contains("SHEAR") || targ.getType().toString().contains("BOOT") || targ.getType().toString().contains("LEGG") || targ.getType().toString().contains("CHESTPL") || targ.getType().toString().contains("HELMET") || targ.getType().toString().equals("TNT") || targ.getType().equals(Material.BOW)))
 			{
 				EnchantmentStorageMeta meta = (EnchantmentStorageMeta) drop.getItemMeta();
 				
 				for(CustomEnchantment i : new GList<CustomEnchantment>(EnchantmentAPI.getEnchantments(drop).keySet()))
 				{
-					s(i.getClass().getSimpleName());
 					if(i.canEnchantOnto(targ))
 					{
 						i.removeFromItem(targ);
 						i.addToItem(targ, EnchantmentAPI.getEnchantments(drop).get(i));
+						sendDrop(EnchantmentAPI.getEnchantments(drop).get(i), (Player) e.getWhoClicked());
 					}
 					
 					else
@@ -1674,6 +1677,7 @@ public class EffexController extends ConfigurableController
 				for(Enchantment i : meta.getStoredEnchants().keySet())
 				{
 					t.getEnchantmentSet().addEnchantment(i, meta.getStoredEnchants().get(i));
+					sendDrop(meta.getStoredEnchants().get(i), (Player) e.getWhoClicked());
 				}
 				
 				StackedInventory inv = new StackedInventory(e.getClickedInventory());
