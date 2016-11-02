@@ -95,6 +95,7 @@ import org.phantomapi.construct.Ticked;
 import org.phantomapi.core.SyncStart;
 import org.phantomapi.currency.ExperienceCurrency;
 import org.phantomapi.currency.Transaction;
+import org.phantomapi.event.FalseBlockBreakEvent;
 import org.phantomapi.event.PlayerKillPlayerEvent;
 import org.phantomapi.event.PlayerMoveBlockEvent;
 import org.phantomapi.event.TNTDispenseEvent;
@@ -1395,6 +1396,7 @@ public class EffexController extends ConfigurableController
 								}
 								
 								ItemStack cust = null;
+								callEvent(new FalseBlockBreakEvent(b, e.getPlayer()));
 								
 								try
 								{
