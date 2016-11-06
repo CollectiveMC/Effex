@@ -1158,6 +1158,50 @@ public class EffexController extends ConfigurableController
 					return;
 				}
 				
+				if(e.getPlayer().getItemInHand() != null && EnchantmentAPI.itemHasEnchantment(e.getPlayer().getItemInHand(), "Forge"))
+				{
+					boolean part = false;
+					
+					if(e.getBlock().getType().equals(Material.IRON_ORE))
+					{
+						part = true;
+						
+						if(new PhantomInventory(e.getPlayer().getInventory()).hasSpace())
+						{
+							e.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT));
+						}
+						
+						else
+						{
+							e.getBlock().getLocation().getWorld().dropItem(e.getBlock().getLocation(), new ItemStack(Material.IRON_INGOT));
+						}
+					}
+					
+					if(e.getBlock().getType().equals(Material.GOLD_ORE))
+					{
+						part = true;
+						
+						if(new PhantomInventory(e.getPlayer().getInventory()).hasSpace())
+						{
+							e.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT));
+						}
+						
+						else
+						{
+							e.getBlock().getLocation().getWorld().dropItem(e.getBlock().getLocation(), new ItemStack(Material.GOLD_INGOT));
+						}
+					}
+					
+					if(part)
+					{
+						e.setCancelled(true);
+						e.getBlock().setType(Material.AIR);
+						ParticleEffect.LAVA.display(0.2f, 4, e.getBlock().getLocation(), 24);
+						new GSound(Sound.FIZZ, 0.4f, 1f).play(e.getPlayer().getLocation());
+						return;
+					}
+				}
+				
 				Collection<ItemStack> is = e.getBlock().getDrops(e.getPlayer().getItemInHand());
 				e.setCancelled(true);
 				e.getBlock().setType(Material.AIR);
@@ -1172,52 +1216,6 @@ public class EffexController extends ConfigurableController
 							if(i.getType().equals(Material.HOPPER))
 							{
 								continue;
-							}
-							
-							if(e.getPlayer().getItemInHand() != null && EnchantmentAPI.itemHasEnchantment(e.getPlayer().getItemInHand(), "Forge"))
-							{
-								boolean part = false;
-								
-								if(e.getBlock().getType().equals(Material.IRON_ORE))
-								{
-									part = true;
-									
-									if(new PhantomInventory(e.getPlayer().getInventory()).hasSpace())
-									{
-										e.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT));
-									}
-									
-									else
-									{
-										e.getBlock().getLocation().getWorld().dropItem(e.getBlock().getLocation(), new ItemStack(Material.IRON_INGOT));
-									}
-								}
-								
-								if(e.getBlock().getType().equals(Material.GOLD_ORE))
-								{
-									part = true;
-									
-									if(new PhantomInventory(e.getPlayer().getInventory()).hasSpace())
-									{
-										e.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT));
-									}
-									
-									else
-									{
-										e.getBlock().getLocation().getWorld().dropItem(e.getBlock().getLocation(), new ItemStack(Material.GOLD_INGOT));
-									}
-								}
-								
-								if(part)
-								{
-									ParticleEffect.LAVA.display(0.2f, 4, e.getBlock().getLocation(), 24);
-									new GSound(Sound.FIZZ, 0.4f, 1f).play(e.getPlayer().getLocation());
-								}
-							}
-							
-							else
-							{
-								
 							}
 							
 							if(new PhantomInventory(e.getPlayer().getInventory()).hasSpace())
