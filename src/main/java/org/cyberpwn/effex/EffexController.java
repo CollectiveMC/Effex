@@ -1632,83 +1632,91 @@ public class EffexController extends ConfigurableController
 		ItemStack drop = e.getCursor();
 		ItemStack targ = e.getCurrentItem();
 		
-		if(targ != null && drop != null)
+		if(e.getWhoClicked() instanceof Player && e.getClickedInventory() != null)
 		{
-			if(drop.getType().equals(Material.ENCHANTED_BOOK) && (targ.getType().equals(Material.FISHING_ROD) || targ.getType().toString().contains("SWORD") || targ.getType().toString().contains("HOE") || targ.getType().toString().contains("SPADE") || targ.getType().toString().contains("AXE") || targ.getType().toString().contains("SHEAR") || targ.getType().toString().contains("BOOT") || targ.getType().toString().contains("LEGG") || targ.getType().toString().contains("CHESTPL") || targ.getType().toString().contains("HELMET") || targ.getType().toString().equals("TNT") || targ.getType().equals(Material.BOW)))
+			Player p = (Player) e.getWhoClicked();
+			
+			if(e.getClickedInventory().getType().equals(p.getInventory().getType()) && e.getClickedInventory().equals(p.getInventory()))
 			{
-				EnchantmentStorageMeta meta = (EnchantmentStorageMeta) drop.getItemMeta();
-				
-				for(CustomEnchantment i : new GList<CustomEnchantment>(EnchantmentAPI.getEnchantments(drop).keySet()))
+				if(targ != null && drop != null)
 				{
-					if(i.canEnchantOnto(targ))
+					if(drop.getType().equals(Material.ENCHANTED_BOOK) && (targ.getType().equals(Material.FISHING_ROD) || targ.getType().toString().contains("SWORD") || targ.getType().toString().contains("HOE") || targ.getType().toString().contains("SPADE") || targ.getType().toString().contains("AXE") || targ.getType().toString().contains("SHEAR") || targ.getType().toString().contains("BOOT") || targ.getType().toString().contains("LEGG") || targ.getType().toString().contains("CHESTPL") || targ.getType().toString().contains("HELMET") || targ.getType().toString().equals("TNT") || targ.getType().equals(Material.BOW)))
 					{
-						i.removeFromItem(targ);
-						i.addToItem(targ, EnchantmentAPI.getEnchantments(drop).get(i));
-						sendDrop(EnchantmentAPI.getEnchantments(drop).get(i), (Player) e.getWhoClicked());
-					}
-					
-					else
-					{
-						return;
-					}
-				}
-				
-				Stack t = new Stack(targ);
-				
-				for(Enchantment i : meta.getStoredEnchants().keySet())
-				{
-					try
-					{
-						if(!i.getItemTarget().includes(targ.getType()) && !(i.equals(Enchantment.DAMAGE_ALL) && targ.getType().toString().endsWith("_AXE")))
-						{
-							e.getWhoClicked().sendMessage(F.color("&8&l(&c&l!&8&l) &cInvalid &e&l" + i.getName().substring(0, 1) + i.getName().toLowerCase().replaceAll("_", " ").substring(1) + "&c -> &e&l" + targ.getType().toString().substring(0, 1) + targ.getType().toString().toLowerCase().replaceAll("_", " ").substring(1)));
-							return;
-						}
-					}
-					
-					catch(Exception ex)
-					{
+						EnchantmentStorageMeta meta = (EnchantmentStorageMeta) drop.getItemMeta();
 						
+						for(CustomEnchantment i : new GList<CustomEnchantment>(EnchantmentAPI.getEnchantments(drop).keySet()))
+						{
+							if(i.canEnchantOnto(targ))
+							{
+								i.removeFromItem(targ);
+								i.addToItem(targ, EnchantmentAPI.getEnchantments(drop).get(i));
+								sendDrop(EnchantmentAPI.getEnchantments(drop).get(i), (Player) e.getWhoClicked());
+							}
+							
+							else
+							{
+								return;
+							}
+						}
+						
+						Stack t = new Stack(targ);
+						
+						for(Enchantment i : meta.getStoredEnchants().keySet())
+						{
+							try
+							{
+								if(!i.getItemTarget().includes(targ.getType()) && !(i.equals(Enchantment.DAMAGE_ALL) && targ.getType().toString().endsWith("_AXE")))
+								{
+									e.getWhoClicked().sendMessage(F.color("&8&l(&c&l!&8&l) &cInvalid &e&l" + i.getName().substring(0, 1) + i.getName().toLowerCase().replaceAll("_", " ").substring(1) + "&c -> &e&l" + targ.getType().toString().substring(0, 1) + targ.getType().toString().toLowerCase().replaceAll("_", " ").substring(1)));
+									return;
+								}
+							}
+							
+							catch(Exception ex)
+							{
+								
+							}
+						}
+						
+						for(Enchantment i : meta.getStoredEnchants().keySet())
+						{
+							t.getEnchantmentSet().addEnchantment(i, meta.getStoredEnchants().get(i));
+							sendDrop(meta.getStoredEnchants().get(i), (Player) e.getWhoClicked());
+						}
+						
+						StackedInventory inv = new StackedInventory(e.getClickedInventory());
+						inv.setStack(e.getSlot(), t);
+						inv.thrash();
+						
+						e.setCursor(null);
+						e.setCancelled(true);
 					}
 				}
 				
-				for(Enchantment i : meta.getStoredEnchants().keySet())
+				if(targ != null && drop != null)
 				{
-					t.getEnchantmentSet().addEnchantment(i, meta.getStoredEnchants().get(i));
-					sendDrop(meta.getStoredEnchants().get(i), (Player) e.getWhoClicked());
-				}
-				
-				StackedInventory inv = new StackedInventory(e.getClickedInventory());
-				inv.setStack(e.getSlot(), t);
-				inv.thrash();
-				
-				e.setCursor(null);
-				e.setCancelled(true);
-			}
-		}
-		
-		if(targ != null && drop != null)
-		{
-			if(drop.getType().equals(Material.BOOK) && (targ.getType().equals(Material.FISHING_ROD) || targ.getType().toString().contains("SWORD") || targ.getType().toString().contains("HOE") || targ.getType().toString().contains("SPADE") || targ.getType().toString().contains("AXE") || targ.getType().toString().contains("SHEAR") || targ.getType().toString().contains("BOOT") || targ.getType().toString().contains("LEGG") || targ.getType().toString().contains("CHESTPL") || targ.getType().toString().contains("HELMET") || targ.getType().toString().equals("TNT") || targ.getType().equals(Material.BOW)))
-			{
-				for(CustomEnchantment i : new GList<CustomEnchantment>(EnchantmentAPI.getEnchantments(drop).keySet()))
-				{
-					s(i.getClass().getSimpleName());
-					
-					if(i.canEnchantOnto(targ))
+					if(drop.getType().equals(Material.BOOK) && (targ.getType().equals(Material.FISHING_ROD) || targ.getType().toString().contains("SWORD") || targ.getType().toString().contains("HOE") || targ.getType().toString().contains("SPADE") || targ.getType().toString().contains("AXE") || targ.getType().toString().contains("SHEAR") || targ.getType().toString().contains("BOOT") || targ.getType().toString().contains("LEGG") || targ.getType().toString().contains("CHESTPL") || targ.getType().toString().contains("HELMET") || targ.getType().toString().equals("TNT") || targ.getType().equals(Material.BOW)))
 					{
-						i.removeFromItem(targ);
-						i.addToItem(targ, EnchantmentAPI.getEnchantments(drop).get(i));
-					}
-					
-					else
-					{
-						return;
+						for(CustomEnchantment i : new GList<CustomEnchantment>(EnchantmentAPI.getEnchantments(drop).keySet()))
+						{
+							s(i.getClass().getSimpleName());
+							
+							if(i.canEnchantOnto(targ))
+							{
+								i.removeFromItem(targ);
+								i.addToItem(targ, EnchantmentAPI.getEnchantments(drop).get(i));
+							}
+							
+							else
+							{
+								return;
+							}
+						}
+						
+						e.setCursor(null);
+						e.setCancelled(true);
 					}
 				}
-				
-				e.setCursor(null);
-				e.setCancelled(true);
 			}
 		}
 	}
