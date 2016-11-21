@@ -1649,19 +1649,11 @@ public class EffexController extends ConfigurableController
 						
 						for(CustomEnchantment i : new GList<CustomEnchantment>(EnchantmentAPI.getEnchantments(drop).keySet()))
 						{
-							if(i.canEnchantOnto(targ))
+							if(EnchantmentAPI.getEnchantments(targ).size() < maxEnchantments)
 							{
-								if(EnchantmentAPI.getEnchantments(targ).size() < maxEnchantments)
-								{
-									i.removeFromItem(targ);
-									i.addToItem(targ, EnchantmentAPI.getEnchantments(drop).get(i));
-									sendDrop(EnchantmentAPI.getEnchantments(drop).get(i), (Player) e.getWhoClicked());
-								}
-								
-								else
-								{
-									return;
-								}
+								i.removeFromItem(targ);
+								i.addToItem(targ, EnchantmentAPI.getEnchantments(drop).get(i));
+								sendDrop(EnchantmentAPI.getEnchantments(drop).get(i), (Player) e.getWhoClicked());
 							}
 							
 							else
@@ -1671,23 +1663,6 @@ public class EffexController extends ConfigurableController
 						}
 						
 						Stack t = new Stack(targ);
-						
-						for(Enchantment i : meta.getStoredEnchants().keySet())
-						{
-							try
-							{
-								if(!i.getItemTarget().includes(targ.getType()) && !(i.equals(Enchantment.DAMAGE_ALL) && targ.getType().toString().endsWith("_AXE")))
-								{
-									e.getWhoClicked().sendMessage(F.color("&8&l(&c&l!&8&l) &cInvalid &e&l" + i.getName().substring(0, 1) + i.getName().toLowerCase().replaceAll("_", " ").substring(1) + "&c -> &e&l" + targ.getType().toString().substring(0, 1) + targ.getType().toString().toLowerCase().replaceAll("_", " ").substring(1)));
-									return;
-								}
-							}
-							
-							catch(Exception ex)
-							{
-								
-							}
-						}
 						
 						if(EnchantmentAPI.getEnchantments(targ).size() < maxEnchantments)
 						{
@@ -1715,16 +1690,8 @@ public class EffexController extends ConfigurableController
 						{
 							s(i.getClass().getSimpleName());
 							
-							if(i.canEnchantOnto(targ))
-							{
-								i.removeFromItem(targ);
-								i.addToItem(targ, EnchantmentAPI.getEnchantments(drop).get(i));
-							}
-							
-							else
-							{
-								return;
-							}
+							i.removeFromItem(targ);
+							i.addToItem(targ, EnchantmentAPI.getEnchantments(drop).get(i));
 						}
 						
 						e.setCursor(null);
