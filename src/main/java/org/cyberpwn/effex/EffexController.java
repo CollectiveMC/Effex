@@ -147,6 +147,9 @@ public class EffexController extends ConfigurableController
 	@Keyed("math.tiers")
 	public GList<String> tiers = new GList<String>().qadd("apprentice").qadd("novice").qadd("scholar").qadd("expert").qadd("master");
 	
+	@Keyed("max.enchants")
+	public int maxEnchantments = 4;
+	
 	private GMap<Entity, Integer> ebs;
 	private int k;
 	
@@ -1648,9 +1651,17 @@ public class EffexController extends ConfigurableController
 						{
 							if(i.canEnchantOnto(targ))
 							{
-								i.removeFromItem(targ);
-								i.addToItem(targ, EnchantmentAPI.getEnchantments(drop).get(i));
-								sendDrop(EnchantmentAPI.getEnchantments(drop).get(i), (Player) e.getWhoClicked());
+								if(EnchantmentAPI.getEnchantments(targ).size() < maxEnchantments)
+								{
+									i.removeFromItem(targ);
+									i.addToItem(targ, EnchantmentAPI.getEnchantments(drop).get(i));
+									sendDrop(EnchantmentAPI.getEnchantments(drop).get(i), (Player) e.getWhoClicked());
+								}
+								
+								else
+								{
+									return;
+								}
 							}
 							
 							else
@@ -1678,18 +1689,21 @@ public class EffexController extends ConfigurableController
 							}
 						}
 						
-						for(Enchantment i : meta.getStoredEnchants().keySet())
+						if(EnchantmentAPI.getEnchantments(targ).size() < maxEnchantments)
 						{
-							t.getEnchantmentSet().addEnchantment(i, meta.getStoredEnchants().get(i));
-							sendDrop(meta.getStoredEnchants().get(i), (Player) e.getWhoClicked());
+							for(Enchantment i : meta.getStoredEnchants().keySet())
+							{
+								t.getEnchantmentSet().addEnchantment(i, meta.getStoredEnchants().get(i));
+								sendDrop(meta.getStoredEnchants().get(i), (Player) e.getWhoClicked());
+							}
+							
+							StackedInventory inv = new StackedInventory(e.getClickedInventory());
+							inv.setStack(e.getSlot(), t);
+							inv.thrash();
+							
+							e.setCursor(null);
+							e.setCancelled(true);
 						}
-						
-						StackedInventory inv = new StackedInventory(e.getClickedInventory());
-						inv.setStack(e.getSlot(), t);
-						inv.thrash();
-						
-						e.setCursor(null);
-						e.setCancelled(true);
 					}
 				}
 				
