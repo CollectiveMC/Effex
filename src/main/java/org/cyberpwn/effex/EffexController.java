@@ -1362,7 +1362,6 @@ public class EffexController extends ConfigurableController
 								if(breaks.isEmpty())
 								{
 									cancel();
-									e.getPlayer().getItemInHand().setDurability((short) (e.getPlayer().getItemInHand().getDurability() + bxx.get()));
 									return;
 								}
 								
