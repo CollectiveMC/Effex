@@ -1634,6 +1634,8 @@ public class EffexController extends ConfigurableController
 		ItemStack drop = e.getCursor();
 		ItemStack targ = e.getCurrentItem();
 		
+		int count = 0;
+		
 		if(e.getWhoClicked() instanceof Player && e.getClickedInventory() != null)
 		{
 			Player p = (Player) e.getWhoClicked();
@@ -1644,11 +1646,13 @@ public class EffexController extends ConfigurableController
 				{
 					if(drop.getType().equals(Material.ENCHANTED_BOOK) && (targ.getType().equals(Material.FISHING_ROD) || targ.getType().toString().contains("SWORD") || targ.getType().toString().contains("HOE") || targ.getType().toString().contains("SPADE") || targ.getType().toString().contains("AXE") || targ.getType().toString().contains("SHEAR") || targ.getType().toString().contains("BOOT") || targ.getType().toString().contains("LEGG") || targ.getType().toString().contains("CHESTPL") || targ.getType().toString().contains("HELMET") || targ.getType().toString().equals("TNT") || targ.getType().equals(Material.BOW)))
 					{
+						count = EnchantmentAPI.getEnchantments(targ).size() + targ.getEnchantments().size();
+						
 						EnchantmentStorageMeta meta = (EnchantmentStorageMeta) drop.getItemMeta();
 						
 						for(CustomEnchantment i : new GList<CustomEnchantment>(EnchantmentAPI.getEnchantments(drop).keySet()))
 						{
-							if(EnchantmentAPI.getEnchantments(targ).size() < maxEnchantments)
+							if(count < maxEnchantments)
 							{
 								i.removeFromItem(targ);
 								i.addToItem(targ, EnchantmentAPI.getEnchantments(drop).get(i));
@@ -1663,7 +1667,7 @@ public class EffexController extends ConfigurableController
 						
 						Stack t = new Stack(targ);
 						
-						if(EnchantmentAPI.getEnchantments(targ).size() < maxEnchantments)
+						if(count < maxEnchantments)
 						{
 							for(Enchantment i : meta.getStoredEnchants().keySet())
 							{
@@ -1678,6 +1682,11 @@ public class EffexController extends ConfigurableController
 							e.setCursor(null);
 							e.setCancelled(true);
 						}
+						
+						else
+						{
+							return;
+						}
 					}
 				}
 				
@@ -1685,12 +1694,22 @@ public class EffexController extends ConfigurableController
 				{
 					if(drop.getType().equals(Material.BOOK) && (targ.getType().equals(Material.FISHING_ROD) || targ.getType().toString().contains("SWORD") || targ.getType().toString().contains("HOE") || targ.getType().toString().contains("SPADE") || targ.getType().toString().contains("AXE") || targ.getType().toString().contains("SHEAR") || targ.getType().toString().contains("BOOT") || targ.getType().toString().contains("LEGG") || targ.getType().toString().contains("CHESTPL") || targ.getType().toString().contains("HELMET") || targ.getType().toString().equals("TNT") || targ.getType().equals(Material.BOW)))
 					{
+						count = EnchantmentAPI.getEnchantments(targ).size() + targ.getEnchantments().size();
+						
 						for(CustomEnchantment i : new GList<CustomEnchantment>(EnchantmentAPI.getEnchantments(drop).keySet()))
 						{
-							s(i.getClass().getSimpleName());
+							if(count < maxEnchantments)
+							{
+								s(i.getClass().getSimpleName());
+								
+								i.removeFromItem(targ);
+								i.addToItem(targ, EnchantmentAPI.getEnchantments(drop).get(i));
+							}
 							
-							i.removeFromItem(targ);
-							i.addToItem(targ, EnchantmentAPI.getEnchantments(drop).get(i));
+							else
+							{
+								return;
+							}
 						}
 						
 						e.setCursor(null);
