@@ -25,7 +25,7 @@ public class LongShotEnchantment extends CustomEnchantment implements AmbientEff
 		setMaxLevel(1);
 		setBase(5);
 		setInterval(8);
-		description = "The further the arrow travles, the more damage it does (Bow)";
+		description = "The further the arrow travels, the more damage it does (Bow)";
 	}
 	
 	@Override
@@ -62,6 +62,7 @@ public class LongShotEnchantment extends CustomEnchantment implements AmbientEff
 		return pow;
 	}
 	
+	@Override
 	public void setPow(double pow)
 	{
 		this.pow = pow;
