@@ -115,7 +115,6 @@ import org.phantomapi.multiblock.Multiblock;
 import org.phantomapi.nms.NMSX;
 import org.phantomapi.physics.VectorMath;
 import org.phantomapi.stack.Stack;
-import org.phantomapi.stack.StackedInventory;
 import org.phantomapi.sync.Task;
 import org.phantomapi.sync.TaskLater;
 import org.phantomapi.util.C;
@@ -1675,9 +1674,7 @@ public class EffexController extends ConfigurableController
 								sendDrop(meta.getStoredEnchants().get(i), (Player) e.getWhoClicked());
 							}
 							
-							StackedInventory inv = new StackedInventory(e.getClickedInventory());
-							inv.setStack(e.getSlot(), t);
-							inv.thrash();
+							e.getClickedInventory().setItem(e.getSlot(), t.toItemStack());
 							
 							e.setCursor(null);
 							e.setCancelled(true);
