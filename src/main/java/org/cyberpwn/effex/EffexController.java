@@ -1394,6 +1394,11 @@ public class EffexController extends ConfigurableController
 									continue;
 								}
 								
+								if(e.isCancelled())
+								{
+									continue;
+								}
+								
 								ItemStack cust = null;
 								callEvent(new FalseBlockBreakEvent(b, e.getPlayer()));
 								
